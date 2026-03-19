@@ -510,11 +510,10 @@ def setup_smile_cafe_data():
     db.session.commit()
     print(".. تم تحميل منيو Smile Cafe في قاعدة البيانات ..")
 
-@app.before_first_request
-def initialize_database():
-    """Initialize database before first request"""
+# تهيئة قاعدة البيانات عند بدء التطبيق
+with app.app_context():
     try:
-        print("Initializing database before first request...")
+        print("Creating database tables...")
         db.create_all()
         print("Database tables created successfully!")
         
@@ -524,6 +523,11 @@ def initialize_database():
             print("Initial data added successfully!")
     except Exception as e:
         print(f"Database initialization error: {e}")
+
+@app.before_first_request
+def initialize_database():
+    """Initialize database before first request"""
+    pass
 
 if __name__ == '__main__':
     with app.app_context():
