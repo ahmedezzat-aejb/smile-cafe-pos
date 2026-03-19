@@ -3,7 +3,8 @@ services:
     name: smile-cafe-pos
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: python -c "from app import app, db; app.app_context().push(); db.create_all(); print('Database initialized!')" && python app.py
+    preDeployCommand: python -c "from app import app, db; app.app_context().push(); db.create_all(); print('Database initialized!')"
+    startCommand: python app.py
     plan: free
     autoDeploy: true
     healthCheckPath: /
