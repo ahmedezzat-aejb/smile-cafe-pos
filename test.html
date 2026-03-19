@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMILE CAFE - اختبار التصميم</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d5b7 50%, #d4af37 100%);
+            min-height: 100vh;
+            direction: rtl;
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* خلفية زخرفية للكافيه */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="100" fill="rgba(111,78,55,0.03)">☕</text></svg>') repeat;
+            background-size: 100px 100px;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.2;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.1;
+            }
+        }
+
+        .cafe-header {
+            background: linear-gradient(135deg, #6f4e37 0%, #8b5a3c 100%);
+            color: white;
+            padding: 50px 40px;
+            border-radius: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 50px rgba(111, 78, 55, 0.4);
+            border: 3px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .cafe-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="100" fill="rgba(255,255,255,0.05)">☕</text></svg>') repeat;
+            background-size: 60px 60px;
+        }
+
+        .cafe-logo {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .cafe-logo::after {
+            content: '☕';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            opacity: 0.2;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .cafe-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(45deg, #ffffff, #f5e6d3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cafe-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            font-style: italic;
+            position: relative;
+            z-index: 2;
+            font-weight: 300;
+        }
+
+        .card-custom {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(111, 78, 55, 0.2);
+            padding: 30px;
+            margin: 25px 0;
+            transition: all 0.3s ease;
+            border: 2px solid #f5e6d3;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 60px rgba(111, 78, 55, 0.3);
+            border-color: #d4af37;
+        }
+
+        .product-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+            backdrop-filter: blur(15px);
+            border: 2px solid #f5e6d3;
+            border-radius: 25px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(111, 78, 55, 0.15);
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(111, 78, 55, 0.3);
+            border-color: #d4af37;
+            border-width: 3px;
+        }
+
+        .product-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+            color: #6f4e37;
+            filter: drop-shadow(0 2px 4px rgba(111, 78, 55, 0.2));
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(245, 230, 211, 0.8));
+            border-radius: 50%;
+            border: 2px solid rgba(111, 78, 55, 0.2);
+        }
+
+        .product-card:hover .product-icon {
+            transform: scale(1.15) rotate(5deg);
+            color: #8b5a3c;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(212, 175, 55, 0.3));
+            border-color: #d4af37;
+        }
+
+        .product-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #6f4e37;
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid rgba(111, 78, 55, 0.2);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .btn-success-custom {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-success-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(39, 174, 96, 0.4);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- هيدر الكافيه الاحترافي -->
+        <div class="cafe-header">
+            <div class="cafe-logo">
+                <i class="fas fa-coffee"></i>
+            </div>
+            <h1 class="cafe-title">SMILE CAFE</h1>
+            <p class="cafe-subtitle">نظام نقطة البيع الاحترافي</p>
+        </div>
+
+        <div class="card-custom">
+            <h2 style="text-align: center; color: #6f4e37; margin-bottom: 30px;">🎨 اختبار التصميم الاحترافي</h2>
+            
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-icon">
+                        <i class="fas fa-coffee"></i>
+                    </div>
+                    <div class="product-name">قهوة تركي</div>
+                    <div class="product-price">35.00 ج.م</div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">
+                        <i class="fas fa-pizza-slice"></i>
+                    </div>
+                    <div class="product-name">بيتزا مارجريتا</div>
+                    <div class="product-price">120.00 ج.م</div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">
+                        <i class="fas fa-smoking"></i>
+                    </div>
+                    <div class="product-name">حجر فاخر تفاح</div>
+                    <div class="product-price">80.00 ج.م</div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">
+                        <i class="fas fa-ice-cream"></i>
+                    </div>
+                    <div class="product-name">زبادي خلاط فواكه</div>
+                    <div class="product-price">45.00 ج.م</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="/" class="btn-success-custom">
+                    <i class="fas fa-check"></i> الانتقال إلى نقطة البيع
+                </a>
+                <a href="/admin" class="btn-success-custom" style="margin-right: 15px;">
+                    <i class="fas fa-cog"></i> لوحة التحكم
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

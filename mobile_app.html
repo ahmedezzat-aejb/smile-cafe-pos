@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMILE CAFE - تطبيق الجرسونات</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d5b7 50%, #d4af37 100%);
+            min-height: 100vh;
+            direction: rtl;
+            padding: 10px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="100" fill="rgba(111,78,55,0.03)">☕</text></svg>') repeat;
+            background-size: 100px 100px;
+            z-index: -1;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #6f4e37 0%, #8b5a3c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(111, 78, 55, 0.3);
+        }
+
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .app-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .table-selector {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(111, 78, 55, 0.2);
+        }
+
+        .table-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .table-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(39, 174, 96, 0.3);
+        }
+
+        .table-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .table-btn.selected {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .table-btn i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .menu-sections {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(111, 78, 55, 0.2);
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+        }
+
+        .category-tab {
+            background: linear-gradient(135deg, #6f4e37 0%, #8b5a3c 100%);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 8px rgba(111, 78, 55, 0.3);
+        }
+
+        .category-tab:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(111, 78, 55, 0.4);
+        }
+
+        .category-tab.active {
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4c1 100%);
+            color: #2c3e50;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .product-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(111, 78, 55, 0.2);
+            border-color: #6f4e37;
+        }
+
+        .product-card.selected {
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4c1 100%);
+            border-color: #d4af37;
+        }
+
+        .product-icon {
+            font-size: 2rem;
+            color: #6f4e37;
+            margin-bottom: 8px;
+        }
+
+        .product-name {
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .product-price {
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .product-quantity {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .order-summary {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(111, 78, 55, 0.2);
+            position: sticky;
+            bottom: 10px;
+            z-index: 100;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-name {
+            flex-grow: 1;
+            font-weight: 500;
+        }
+
+        .order-item-qty {
+            background: #6f4e37;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin: 0 5px;
+        }
+
+        .order-item-price {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-top: 2px solid #6f4e37;
+            margin-top: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-send {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            box-shadow: 0 3px 10px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-send:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-clear {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-clear:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(39, 174, 96, 0.4);
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6f4e37;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            
+            .category-tabs {
+                flex-wrap: nowrap;
+            }
+            
+            .app-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- رأس التطبيق -->
+        <div class="app-header">
+            <h1 class="app-title">
+                <i class="fas fa-coffee"></i> SMILE CAFE
+            </h1>
+            <p class="app-subtitle">تطبيق الجرسونات</p>
+        </div>
+
+        <!-- اختيار الطاولة -->
+        <div class="table-selector">
+            <h5><i class="fas fa-table"></i> اختر الطاولة:</h5>
+            <div class="table-grid" id="tableGrid">
+                <!-- سيتم إضافة الطاولات هنا -->
+            </div>
+        </div>
+
+        <!-- أقسام القائمة -->
+        <div class="menu-sections">
+            <div class="category-tabs" id="categoryTabs">
+                <!-- سيتم إضافة الفئات هنا -->
+            </div>
+            <div class="products-grid" id="productsGrid">
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>جاري تحميل المنتجات...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ملخص الطلب -->
+        <div class="order-summary">
+            <h5><i class="fas fa-receipt"></i> ملخص الطلب:</h5>
+            <div id="orderItems">
+                <p style="text-align: center; color: #999;">لا توجد منتجات في الطلب</p>
+            </div>
+            <div class="order-total">
+                <span>الإجمالي:</span>
+                <span id="orderTotal">0.00 ج.م</span>
+            </div>
+            <div class="action-buttons">
+                <button class="btn-action btn-clear" onclick="clearOrder()">
+                    <i class="fas fa-trash"></i> مسح
+                </button>
+                <button class="btn-action btn-send" onclick="sendOrder()">
+                    <i class="fas fa-paper-plane"></i> إرسال الطلب
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- إشعار -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">تم إرسال الطلب بنجاح!</span>
+    </div>
+
+    <script>
+        let selectedTable = null;
+        let selectedCategory = null;
+        let orderItems = {};
+        let products = [];
+
+        // تهيئة التطبيق
+        async function initApp() {
+            await loadProducts();
+            generateTables();
+            generateCategories();
+        }
+
+        // تحميل المنتجات
+        async function loadProducts() {
+            try {
+                const response = await fetch('/api/menu');
+                products = await response.json();
+                displayProducts();
+            } catch (error) {
+                console.error('Error loading products:', error);
+                showNotification('خطأ في تحميل المنتجات', 'error');
+            }
+        }
+
+        // إنشاء الطاولات
+        function generateTables() {
+            const tableGrid = document.getElementById('tableGrid');
+            let html = '';
+            
+            for (let i = 1; i <= 20; i++) {
+                html += `
+                    <button class="table-btn" onclick="selectTable('T${i}')" id="table-T${i}">
+                        <i class="fas fa-chair"></i>
+                        طاولة ${i}
+                    </button>
+                `;
+            }
+            
+            tableGrid.innerHTML = html;
+        }
+
+        // اختيار الطاولة
+        function selectTable(tableId) {
+            // إزالة التحديد السابق
+            document.querySelectorAll('.table-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // تحديد الطاولة الجديدة
+            document.getElementById(`table-${tableId}`).classList.add('selected');
+            selectedTable = tableId;
+            
+            showNotification(`تم اختيار طاولة ${tableId.replace('T', '')}`);
+        }
+
+        // إنشاء الفئات
+        function generateCategories() {
+            const categories = [...new Set(products.map(p => p.category))];
+            const categoryTabs = document.getElementById('categoryTabs');
+            
+            let html = `
+                <button class="category-tab active" onclick="selectCategory('all')">
+                    <i class="fas fa-th"></i> الكل
+                </button>
+            `;
+            
+            categories.forEach(category => {
+                const icon = getCategoryIcon(category);
+                html += `
+                    <button class="category-tab" onclick="selectCategory('${category}')">
+                        <i class="fas ${icon}"></i> ${getCategoryName(category)}
+                    </button>
+                `;
+            });
+            
+            categoryTabs.innerHTML = html;
+        }
+
+        // اختيار الفئة
+        function selectCategory(category) {
+            selectedCategory = category;
+            
+            // تحديث التبويبات
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            displayProducts();
+        }
+
+        // عرض المنتجات
+        function displayProducts() {
+            const productsGrid = document.getElementById('productsGrid');
+            
+            let filteredProducts = selectedCategory === 'all' 
+                ? products 
+                : products.filter(p => p.category === selectedCategory);
+            
+            let html = '';
+            filteredProducts.forEach(product => {
+                const quantity = orderItems[product.id] || 0;
+                html += `
+                    <div class="product-card ${quantity > 0 ? 'selected' : ''}" onclick="toggleProduct(${product.id})">
+                        ${quantity > 0 ? `<div class="product-quantity">${quantity}</div>` : ''}
+                        <div class="product-icon">
+                            <i class="fas ${getProductIcon(product.name)}"></i>
+                        </div>
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">${product.price.toFixed(2)} ج.م</div>
+                    </div>
+                `;
+            });
+            
+            productsGrid.innerHTML = html;
+        }
+
+        // إضافة/إزالة منتج
+        function toggleProduct(productId) {
+            if (!selectedTable) {
+                showNotification('يرجى اختيار الطاولة أولاً', 'error');
+                return;
+            }
+            
+            if (orderItems[productId]) {
+                orderItems[productId]++;
+            } else {
+                orderItems[productId] = 1;
+            }
+            
+            updateOrderSummary();
+            displayProducts();
+        }
+
+        // تحديث ملخص الطلب
+        function updateOrderSummary() {
+            const orderItemsDiv = document.getElementById('orderItems');
+            const orderTotalDiv = document.getElementById('orderTotal');
+            
+            if (Object.keys(orderItems).length === 0) {
+                orderItemsDiv.innerHTML = '<p style="text-align: center; color: #999;">لا توجد منتجات في الطلب</p>';
+                orderTotalDiv.textContent = '0.00 ج.م';
+                return;
+            }
+            
+            let html = '';
+            let total = 0;
+            
+            Object.entries(orderItems).forEach(([productId, quantity]) => {
+                const product = products.find(p => p.id == productId);
+                if (product) {
+                    const itemTotal = product.price * quantity;
+                    total += itemTotal;
+                    
+                    html += `
+                        <div class="order-item">
+                            <span class="order-item-name">${product.name}</span>
+                            <span class="order-item-qty">${quantity}x</span>
+                            <span class="order-item-price">${itemTotal.toFixed(2)} ج.م</span>
+                        </div>
+                    `;
+                }
+            });
+            
+            orderItemsDiv.innerHTML = html;
+            orderTotalDiv.textContent = `${total.toFixed(2)} ج.م`;
+        }
+
+        // مسح الطلب
+        function clearOrder() {
+            if (confirm('هل أنت متأكد من مسح الطلب؟')) {
+                orderItems = {};
+                updateOrderSummary();
+                displayProducts();
+                showNotification('تم مسح الطلب');
+            }
+        }
+
+        // إرسال الطلب
+        async function sendOrder() {
+            if (!selectedTable) {
+                showNotification('يرجى اختيار الطاولة أولاً', 'error');
+                return;
+            }
+            
+            if (Object.keys(orderItems).length === 0) {
+                showNotification('يرجى إضافة منتجات للطلب', 'error');
+                return;
+            }
+            
+            try {
+                const orderData = {
+                    table_num: selectedTable,
+                    items: Object.entries(orderItems).map(([productId, quantity]) => ({
+                        id: parseInt(productId),
+                        qty: quantity
+                    }))
+                };
+                
+                const response = await fetch('/create_order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showNotification('✅ تم إرسال الطلب إلى الكاشير والمطبخ بنجاح!');
+                    orderItems = {};
+                    updateOrderSummary();
+                    displayProducts();
+                } else {
+                    showNotification('❌ فشل إرسال الطلب: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error sending order:', error);
+                showNotification('❌ خطأ في إرسال الطلب', 'error');
+            }
+        }
+
+        // عرض الإشعار
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            
+            if (type === 'error') {
+                notification.style.background = 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)';
+            } else {
+                notification.style.background = 'linear-gradient(135deg, #27ae60 0%, #229954 100%)';
+            }
+            
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // الحصول على أيقونة الفئة
+        function getCategoryIcon(category) {
+            const icons = {
+                'ساخن': 'fa-coffee',
+                'مثلج': 'fa-glass-water',
+                'وجبة': 'fa-utensils',
+                'بيتزا': 'fa-pizza-slice',
+                'كريب': 'fa-ice-cream',
+                'سندوتش': 'fa-burger',
+                'شيشة': 'fa-smoking',
+                'حلويات': 'fa-ice-cream',
+                'خدمة': 'fa-concierge-bell'
+            };
+            return icons[category] || 'fa-coffee';
+        }
+
+        // الحصول على اسم الفئة
+        function getCategoryName(category) {
+            const names = {
+                'ساخن': 'ساخن',
+                'مثلج': 'مثلج',
+                'وجبة': 'وجبات',
+                'بيتزا': 'بيتزا',
+                'كريب': 'كريب',
+                'ساندوتش': 'ساندوتش',
+                'شيشة': 'شيشة',
+                'حلويات': 'حلويات',
+                'خدمة': 'خدمات'
+            };
+            return names[category] || category;
+        }
+
+        // الحصول على أيقونة المنتج
+        function getProductIcon(productName) {
+            const iconMap = {
+                "قهوة": "fa-coffee",
+                "نسكافيه": "fa-mug-hot",
+                "كابتشينو": "fa-mug-hot",
+                "لاتيه": "fa-mug-hot",
+                "شاي": "fa-mug-hot",
+                "شوكولاتة": "fa-mug-hot",
+                "آيس": "fa-glass-water",
+                "سموزي": "fa-glass-water",
+                "ميلك": "fa-glass-water",
+                "فرابيه": "fa-glass-water",
+                "وجبة": "fa-utensils",
+                "فرخة": "fa-drumstick-bite",
+                "برجر": "fa-burger",
+                "كفتة": "fa-drumstick-bite",
+                "بيتزا": "fa-pizza-slice",
+                "كريب": "fa-ice-cream",
+                "ساندوتش": "fa-burger",
+                "شيشة": "fa-smoking",
+                "حلوى": "fa-ice-cream",
+                "نوتيلا": "fa-ice-cream",
+                "فخفخينا": "fa-ice-cream"
+            };
+
+            for (const [key, icon] of Object.entries(iconMap)) {
+                if (productName.includes(key)) {
+                    return icon;
+                }
+            }
+
+            return "fa-coffee";
+        }
+
+        // تشغيل التطبيق
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

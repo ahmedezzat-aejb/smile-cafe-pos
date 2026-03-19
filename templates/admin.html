@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMILE CAFE - لوحة التحكم الاحترافية</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d5b7 50%, #d4af37 100%);
+            min-height: 100vh;
+            direction: rtl;
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* خلفية زخرفية للكافيه */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="100" fill="rgba(111,78,55,0.03)">☕</text></svg>') repeat;
+            background-size: 100px 100px;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.2;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* أنماط إضافية للوحة التحكم */
+        .admin-header {
+            background: linear-gradient(135deg, #6f4e37 0%, #8b5a3c 100%);
+            color: white;
+            padding: 50px 40px;
+            border-radius: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 50px rgba(111, 78, 55, 0.4);
+            border: 3px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .admin-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="100" fill="rgba(255,255,255,0.05)">☕</text></svg>') repeat;
+            background-size: 60px 60px;
+        }
+
+        .cafe-logo {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .cafe-logo::after {
+            content: '☕';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            opacity: 0.2;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .admin-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="100" fill="rgba(255,255,255,0.05)">☕</text></svg>') repeat;
+            background-size: 50px 50px;
+        }
+        
+        .admin-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(45deg, #ffffff, #f5e6d3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .admin-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            font-style: italic;
+            position: relative;
+            z-index: 2;
+            font-weight: 300;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #6f4e37 0%, #8b5a3c 100%);
+            color: white;
+            padding: 35px;
+            border-radius: 25px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(111, 78, 55, 0.3);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            transition: all 0.5s ease;
+        }
+        
+        .stat-card:hover::before {
+            top: -30%;
+            right: -30%;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(111, 78, 55, 0.4);
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-label {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+            font-weight: 500;
+        }
+        
+        .card-custom {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(111, 78, 55, 0.2);
+            padding: 30px;
+            margin: 25px 0;
+            transition: all 0.3s ease;
+            border: 2px solid #f5e6d3;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4c1 100%);
+            opacity: 0.1;
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 60px rgba(111, 78, 55, 0.3);
+            border-color: #d4af37;
+        }
+        
+        .table-custom {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(111, 78, 55, 0.15);
+            margin: 25px 0;
+            border: 2px solid #f5e6d3;
+        }
+        
+        .table-custom thead th {
+            background: linear-gradient(135deg, #6f4e37 0%, #8b5a3c 100%);
+            color: white;
+            font-weight: bold;
+            border: none;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .table-custom thead th::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+        
+        .table-custom tbody td {
+            padding: 15px 20px;
+            text-align: center;
+            border-color: #f5e6d3;
+            vertical-align: middle;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .table-custom tbody tr:hover {
+            background-color: rgba(245, 230, 211, 0.5);
+            transition: background-color 0.3s ease;
+            transform: scale(1.01);
+        }
+        
+        .form-control-custom {
+            border-radius: 15px;
+            border: 2px solid #f5e6d3;
+            padding: 12px 20px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .form-control-custom:focus {
+            border-color: #6f4e37;
+            box-shadow: 0 0 0 0.2rem rgba(111, 78, 55, 0.25);
+            outline: none;
+            background: white;
+        }
+        
+        .btn-pos {
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4c1 100%);
+            color: #2c3e50;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        .btn-pos:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(212, 175, 55, 0.4);
+            color: #2c3e50;
+        }
+        
+        .action-buttons-custom {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-edit-custom {
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4c1 100%);
+            color: #2c3e50;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+        }
+        
+        .btn-edit-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .card-header-custom {
+            background: linear-gradient(135deg, #6f4e37 0%, #8b5a3c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 25px 25px 0 0;
+            font-size: 1.3rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+            margin: -30px -30px 30px -30px;
+        }
+
+        .card-header-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+        
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #6f4e37 0%, #8b5a3c 100%);
+            color: white;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .badge-status {
+            padding: 5px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .badge-open {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .admin-title {
+                font-size: 2rem;
+            }
+            
+            .btn-pos {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="btn-pos">
+        <i class="fas fa-cash-register"></i> نقطة البيع
+    </a>
+
+    <div class="container-fluid">
+        <!-- هيدر لوحة التحكم -->
+        <div class="admin-header">
+            <div class="cafe-logo">
+                <i class="fas fa-coffee"></i>
+            </div>
+            <h1 class="admin-title">SMILE CAFE</h1>
+            <p class="admin-subtitle">لوحة التحكم الاحترافية</p>
+        </div>
+
+        <!-- الإحصائيات -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number">{{ "%.2f"|format(today_total) }}</div>
+                <div class="stat-label">إجمالي المبيعات اليوم</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ products|length }}</div>
+                <div class="stat-label">عدد المنتجات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ inventory|length }}</div>
+                <div class="stat-label">عناصر المخزون</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ orders|length }}</div>
+                <div class="stat-label">الطلبات الأخيرة</div>
+            </div>
+        </div>
+
+        <!-- قسم المنتجات -->
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <i class="fas fa-box"></i> إدارة المنتجات والأسعار
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom" id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>اسم المنتج</th>
+                            <th>الفئة</th>
+                            <th>السعر الحالي</th>
+                            <th>تحديث السعر</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.category }}</td>
+                            <td>{{ "%.2f"|format(product.price) }} ج.م</td>
+                            <td>
+                                <form action="/update_price" method="post" style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                                    <input type="number" name="new_price" class="form-control-custom" placeholder="السعر الجديد" step="0.01" required style="width: 120px;">
+                                    <button type="submit" class="btn-edit-custom">
+                                        <i class="fas fa-edit"></i> تحديث
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- قسم المخزون -->
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <i class="fas fa-warehouse"></i> إدارة المخزون
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th>اسم المادة</th>
+                            <th>الكمية الحالية</th>
+                            <th>الوحدة</th>
+                            <th>حد الطلب</th>
+                            <th>الحالة</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in inventory %}
+                        <tr>
+                            <td>{{ item.item_name }}</td>
+                            <td>{{ "%.2f"|format(item.quantity) }}</td>
+                            <td>{{ item.unit }}</td>
+                            <td>{{ "%.2f"|format(item.low_stock_threshold) }}</td>
+                            <td>
+                                {% if item.quantity < item.low_stock_threshold %}
+                                    <span class="badge-status badge-warning">منخفض</span>
+                                {% else %}
+                                    <span class="badge-status badge-open">جيد</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="/update_inventory" method="post" style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                                    <input type="number" name="new_quantity" class="form-control-custom" placeholder="الكمية المضافة" step="0.01" required style="width: 120px;">
+                                    <button type="submit" class="btn-edit-custom">
+                                        <i class="fas fa-plus"></i> إضافة
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- إدارة الموظفين -->
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <i class="fas fa-users"></i> إدارة الموظفين
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th>اسم الموظف</th>
+                            <th>المنصب</th>
+                            <th>الوردية</th>
+                            <th>رقم الهاتف</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for employee in employees %}
+                        <tr>
+                            <td>{{ employee.name }}</td>
+                            <td>{{ employee.position }}</td>
+                            <td>{{ employee.shift }}</td>
+                            <td>{{ employee.phone or '-' }}</td>
+                            <td>
+                                <button class="btn-action btn-warning">
+                                    <i class="fas fa-edit"></i> تعديل
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center mt-3">
+                <button class="btn-action btn-success" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                    <i class="fas fa-user-plus"></i> إضافة موظف جديد
+                </button>
+            </div>
+        </div>
+
+        <!-- الطلبات الأخيرة -->
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <i class="fas fa-receipt"></i> الطلبات الأخيرة
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>الطاولة</th>
+                            <th>الإجمالي</th>
+                            <th>الحالة</th>
+                            <th>التاريخ</th>
+                            <th>التفاصيل</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.table_num }}</td>
+                            <td>{{ "%.2f"|format(order.final_total) }} ج.م</td>
+                            <td>
+                                <span class="badge-status badge-{{ 'success' if order.status == 'Closed' else 'open' }}">
+                                    {{ 'مغلق' if order.status == 'Closed' else 'مفتوح' }}
+                                </span>
+                            </td>
+                            <td>{{ order.timestamp.strftime('%Y-%m-%d %H:%M') if order.timestamp else '-' }}</td>
+                            <td>
+                                <button class="btn-action btn-info" onclick="showOrderDetails({{ order.id }})">
+                                    <i class="fas fa-eye"></i> عرض
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center mt-3">
+                <button class="btn-action btn-success" onclick="loadReports()">
+                    <i class="fas fa-chart-bar"></i> عرض التقارير
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال إضافة موظف -->
+    <div class="modal fade" id="addEmployeeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">إضافة موظف جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/add_employee">
+                        <div class="mb-3">
+                            <label class="form-label">اسم الموظف</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">المنصب</label>
+                            <select class="form-control" name="position" required>
+                                <option value="">اختر المنصب</option>
+                                <option value="جرسون">جرسون</option>
+                                <option value="كاشير">كاشير</option>
+                                <option value="بارتيستا">بارتيستا</option>
+                                <option value="طباخ">طباخ</option>
+                                <option value="مدير">مدير</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">الوردية</label>
+                            <select class="form-control" name="shift" required>
+                                <option value="">اختر الوردية</option>
+                                <option value="صباحي">صباحي</option>
+                                <option value="مسائي">مسائي</option>
+                                <option value="مزدوج">مزدوج</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">رقم الهاتف</label>
+                            <input type="tel" class="form-control" name="phone">
+                        </div>
+                        <button type="submit" class="btn-action btn-success w-100">
+                            <i class="fas fa-user-plus"></i> إضافة موظف
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showOrderDetails(orderId) {
+            alert('تفاصيل الطلب رقم ' + orderId + ' سيتم عرضها هنا');
+        }
+
+        function loadReports() {
+            fetch('/get_reports')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('التقارير:', data);
+                    alert('سيتم عرض التقارير المفصلة هنا');
+                })
+                .catch(error => {
+                    console.error('خطأ في جلب التقارير:', error);
+                    alert('حدث خطأ في جلب التقارير');
+                });
+        }
+
+        // البحث في المنتجات
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.createElement('input');
+            searchInput.type = 'text';
+            searchInput.className = 'form-control-custom mb-3';
+            searchInput.placeholder = 'بحث في المنتجات...';
+            searchInput.id = 'productSearch';
+            
+            const productsTable = document.getElementById('productsTable');
+            if (productsTable) {
+                productsTable.parentNode.insertBefore(searchInput, productsTable);
+            }
+
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const rows = productsTable.querySelectorAll('tbody tr');
+                
+                rows.forEach(row => {
+                    const productName = row.cells[0].textContent.toLowerCase();
+                    const category = row.cells[1].textContent.toLowerCase();
+                    
+                    if (productName.includes(searchTerm) || category.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // تحديث الصفحة تلقائياً كل 30 ثانية
+        setInterval(() => {
+            location.reload();
+        }, 30000);
+    </script>
+</body>
+</html>
+            <div class="card-header-custom">
+                <i class="fas fa-box"></i> إدارة المنتجات والأسعار
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th>اسم المنتج</th>
+                            <th>الفئة</th>
+                            <th>السعر الحالي</th>
+                            <th>تحديث السعر</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.category }}</td>
+                            <td>{{ "%.2f"|format(product.price) }} ج.م</td>
+                            <td>
+                                <form action="/update_price" method="post" style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                                    <input type="number" name="new_price" class="form-control-custom" placeholder="السعر الجديد" step="0.01" required style="width: 120px;">
+                                    <button type="submit" class="btn-edit-custom">
+                                        <i class="fas fa-edit"></i> تحديث
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- قسم المخزون -->
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <i class="fas fa-warehouse"></i> إدارة المخزون
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th>اسم المادة</th>
+                            <th>الكمية الحالية</th>
+                            <th>الوحدة</th>
+                            <th>إضافة كمية</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in inventory %}
+                        <tr>
+                            <td>{{ item.item_name }}</td>
+                            <td>{{ "%.2f"|format(item.quantity) }}</td>
+                            <td>{{ item.unit }}</td>
+                            <td>
+                                <form action="/update_inventory" method="post" style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                                    <input type="number" name="new_quantity" class="form-control-custom" placeholder="الكمية" step="0.01" required style="width: 100px;">
+                                    <button type="submit" class="btn-edit-custom">
+                                        <i class="fas fa-plus"></i> إضافة
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- قسم الطلبات -->
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <i class="fas fa-receipt"></i> آخر الطلبات
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>رقم الطاولة</th>
+                            <th>الإجمالي</th>
+                            <th>الحالة</th>
+                            <th>التوقيت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>#{{ order.id }}</td>
+                            <td>{{ order.table_num }}</td>
+                            <td>{{ "%.2f"|format(order.final_total) }} ج.م</td>
+                            <td>
+                                <span class="badge badge-success">{{ order.status }}</span>
+                            </td>
+                            <td>{{ order.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- قسم الموظفين -->
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <i class="fas fa-users"></i> إدارة الموظفين
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th>اسم الموظف</th>
+                            <th>المنصب</th>
+                            <th>الوردية</th>
+                            <th>الهاتف</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for employee in employees %}
+                        <tr>
+                            <td>{{ employee.name }}</td>
+                            <td>{{ employee.position }}</td>
+                            <td>{{ employee.shift }}</td>
+                            <td>{{ employee.phone or '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .section-title {
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .section-title i {
+            margin-left: 10px;
+        }
+        .table-responsive {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table th {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            font-weight: bold;
+            border: none;
+            padding: 15px;
+        }
+        .table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+            border-color: #e0e0e0;
+        }
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .btn-action {
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 2px;
+        }
+        .btn-edit {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+        }
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(243,156,18,0.3);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #27ae60, #229954);
+            color: white;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39,174,96,0.3);
+        }
+        .btn-danger {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231,76,60,0.3);
+        }
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            padding: 10px 15px;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        .form-label {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+        .modal-header {
+            background: linear-gradient(45deg, #8e44ad, #9b59b6);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            border: none;
+        }
+        .modal-title {
+            font-weight: bold;
+        }
+        .btn-close {
+            filter: brightness(0) invert(1);
+        }
+        .back-to-pos {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .back-to-pos:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231,76,60,0.3);
+        }
+        .badge-status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .badge-open {
+            background: #27ae60;
+            color: white;
+        }
+        .badge-paid {
+            background: #3498db;
+            color: white;
+        }
+        .low-stock {
+            background: #e74c3c;
+            color: white;
+            font-weight: bold;
+        }
+        .search-box {
+            margin-bottom: 20px;
+        }
+        .search-box input {
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            padding: 12px 20px;
+            font-size: 1rem;
+        }
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-to-pos" onclick="window.location.href='/'">
+        <i class="fas fa-arrow-left"></i> العودة لنقطة البيع
+    </button>
+
+    <div class="container-fluid">
+        <div class="header">
+            <h1><i class="fas fa-cogs"></i> لوحة تحكم Smile Cafe</h1>
+            <p class="mb-0">إدارة كاملة للكافيه والمطعم</p>
+        </div>
+
+        <div class="main-container">
+            <!-- الإحصائيات -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number">{{ "%.2f"|format(today_total) }}</div>
+                    <div class="stat-label">إجمالي المبيعات اليوم</div>
+                </div>
+                <div class="stat-card blue">
+                    <div class="stat-number">{{ products|length }}</div>
+                    <div class="stat-label">عدد المنتجات</div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-number">{{ employees|length }}</div>
+                    <div class="stat-label">عدد الموظفين</div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-number">{{ orders|length }}</div>
+                    <div class="stat-label">الطلبات الأخيرة</div>
+                </div>
+            </div>
+
+            <!-- إدارة المنتجات -->
+            <div class="mb-4">
+                <div class="section-title">
+                    <span><i class="fas fa-box"></i> إدارة المنتجات والأسعار</span>
+                    <button class="btn-action btn-success" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                        <i class="fas fa-plus"></i> إضافة منتج
+                    </button>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" class="form-control" id="productSearch" placeholder="ابحث عن منتج...">
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>اسم المنتج</th>
+                                <th>التصنيف</th>
+                                <th>السعر</th>
+                                <th>الحجم</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTable">
+                            {% for product in products %}
+                            <tr>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.category }}</td>
+                                <td>{{ "%.2f"|format(product.price) }} ج.م</td>
+                                <td>{{ product.size or '-' }}</td>
+                                <td>
+                                    <button class="btn-action btn-edit" onclick="editPrice({{ product.id }}, '{{ product.name }}', {{ product.price }})">
+                                        <i class="fas fa-edit"></i> تعديل السعر
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- إدارة المخزون -->
+            <div class="mb-4">
+                <div class="section-title">
+                    <span><i class="fas fa-warehouse"></i> إدارة المخزون</span>
+                    <button class="btn-action btn-success" data-bs-toggle="modal" data-bs-target="#addInventoryModal">
+                        <i class="fas fa-plus"></i> إضافة مخزون
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>اسم المادة</th>
+                                <th>الكمية الحالية</th>
+                                <th>الوحدة</th>
+                                <th>حد التنبيه</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in inventory %}
+                            <tr>
+                                <td>{{ item.item_name }}</td>
+                                <td>{{ "%.2f"|format(item.quantity) }}</td>
+                                <td>{{ item.unit }}</td>
+                                <td>{{ "%.2f"|format(item.low_stock_threshold) }}</td>
+                                <td>
+                                    {% if item.quantity < item.low_stock_threshold %}
+                                        <span class="badge-status low-stock">منخفض</span>
+                                    {% else %}
+                                        <span class="badge-status badge-open">جيد</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button class="btn-action btn-success" onclick="addStock({{ item.id }}, '{{ item.item_name }}')">
+                                        <i class="fas fa-plus"></i> إضافة كمية
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- إدارة الموظفين -->
+            <div class="mb-4">
+                <div class="section-title">
+                    <span><i class="fas fa-users"></i> إدارة الموظفين</span>
+                    <button class="btn-action btn-success" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                        <i class="fas fa-user-plus"></i> إضافة موظف
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>اسم الموظف</th>
+                                <th>المنصب</th>
+                                <th>الوردية</th>
+                                <th>رقم الهاتف</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employee in employees %}
+                            <tr>
+                                <td>{{ employee.name }}</td>
+                                <td>{{ employee.position }}</td>
+                                <td>{{ employee.shift }}</td>
+                                <td>{{ employee.phone or '-' }}</td>
+                                <td>
+                                    <button class="btn-action btn-edit">
+                                        <i class="fas fa-edit"></i> تعديل
+                                    </button>
+                                    <button class="btn-action btn-danger">
+                                        <i class="fas fa-trash"></i> حذف
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- الطلبات الأخيرة -->
+            <div class="mb-4">
+                <div class="section-title">
+                    <span><i class="fas fa-receipt"></i> الطلبات الأخيرة</span>
+                    <button class="btn-action btn-success" onclick="loadReports()">
+                        <i class="fas fa-chart-bar"></i> عرض التقارير
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>رقم الطلب</th>
+                                <th>الطاولة</th>
+                                <th>الإجمالي</th>
+                                <th>الحالة</th>
+                                <th>التاريخ</th>
+                                <th>التفاصيل</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>#{{ order.id }}</td>
+                                <td>{{ order.table_num }}</td>
+                                <td>{{ "%.2f"|format(order.final_total) }} ج.م</td>
+                                <td>
+                                    {% if order.status == 'Open' %}
+                                        <span class="badge-status badge-open">مفتوح</span>
+                                    {% else %}
+                                        <span class="badge-status badge-paid">مدفوع</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ order.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <button class="btn-action btn-edit" onclick="showOrderDetails({{ order.id }})">
+                                        <i class="fas fa-eye"></i> عرض
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال تعديل السعر -->
+    <div class="modal fade" id="priceModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تعديل سعر المنتج</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="priceForm" method="POST" action="/update_price">
+                        <input type="hidden" id="productId" name="product_id">
+                        <div class="mb-3">
+                            <label class="form-label">اسم المنتج</label>
+                            <input type="text" class="form-control" id="productName" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">السعر الجديد (ج.م)</label>
+                            <input type="number" class="form-control" id="newPrice" name="new_price" step="0.01" required>
+                        </div>
+                        <button type="submit" class="btn-action btn-success w-100">
+                            <i class="fas fa-save"></i> حفظ التغيير
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال إضافة مخزون -->
+    <div class="modal fade" id="stockModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">إضافة كمية للمخزون</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="stockForm" method="POST" action="/update_inventory">
+                        <input type="hidden" id="itemId" name="item_id">
+                        <div class="mb-3">
+                            <label class="form-label">اسم المادة</label>
+                            <input type="text" class="form-control" id="itemName" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">الكمية المضافة</label>
+                            <input type="number" class="form-control" id="newQuantity" name="new_quantity" step="0.01" required>
+                        </div>
+                        <button type="submit" class="btn-action btn-success w-100">
+                            <i class="fas fa-plus"></i> إضافة كمية
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال إضافة موظف -->
+    <div class="modal fade" id="addEmployeeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">إضافة موظف جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/add_employee">
+                        <div class="mb-3">
+                            <label class="form-label">اسم الموظف</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">المنصب</label>
+                            <select class="form-control" name="position" required>
+                                <option value="">اختر المنصب</option>
+                                <option value="جرسون">جرسون</option>
+                                <option value="كاشير">كاشير</option>
+                                <option value="بارتيستا">بارتيستا</option>
+                                <option value="طباخ">طباخ</option>
+                                <option value="مدير">مدير</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">الوردية</label>
+                            <select class="form-control" name="shift" required>
+                                <option value="">اختر الوردية</option>
+                                <option value="صباحي">صباحي</option>
+                                <option value="مسائي">مسائي</option>
+                                <option value="مزدوج">مزدوج</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">رقم الهاتف</label>
+                            <input type="tel" class="form-control" name="phone">
+                        </div>
+                        <button type="submit" class="btn-action btn-success w-100">
+                            <i class="fas fa-user-plus"></i> إضافة موظف
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال إضافة منتج -->
+    <div class="modal fade" id="addProductModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">إضافة منتج جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/add_product">
+                        <div class="mb-3">
+                            <label class="form-label">اسم المنتج</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">التصنيف</label>
+                            <select class="form-control" name="category" required>
+                                <option value="">اختر التصنيف</option>
+                                <option value="ساخن">مشروبات ساخنة</option>
+                                <option value="مثلج">مشروبات مثلجة</option>
+                                <option value="زبادي">زبادي</option>
+                                <option value="عصير">عصائر</option>
+                                <option value="سموثي">سموثي</option>
+                                <option value="كوكتيل">كوكتيلات</option>
+                                <option value="غازية">مشروبات غازية</option>
+                                <option value="وجبة">وجبات</option>
+                                <option value="بيتزا">بيتزا</option>
+                                <option value="كريب">كريب</option>
+                                <option value="سندوتش">سندوتشات</option>
+                                <option value="فخفخينا">فخفخينا</option>
+                                <option value="شيشة">شيشة</option>
+                                <option value="خدمة">خدمات</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">السعر (ج.م)</label>
+                            <input type="number" class="form-control" name="price" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">الحجم (اختياري)</label>
+                            <input type="text" class="form-control" name="size" placeholder="مثال: S, M, L">
+                        </div>
+                        <button type="submit" class="btn-action btn-success w-100">
+                            <i class="fas fa-plus"></i> إضافة منتج
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function editPrice(productId, productName, currentPrice) {
+            document.getElementById('productId').value = productId;
+            document.getElementById('productName').value = productName;
+            document.getElementById('newPrice').value = currentPrice;
+            new bootstrap.Modal(document.getElementById('priceModal')).show();
+        }
+
+        function addStock(itemId, itemName) {
+            document.getElementById('itemId').value = itemId;
+            document.getElementById('itemName').value = itemName;
+            document.getElementById('newQuantity').value = '';
+            new bootstrap.Modal(document.getElementById('stockModal')).show();
+        }
+
+        function showOrderDetails(orderId) {
+            alert('تفاصيل الطلب رقم ' + orderId + ' سيتم عرضها هنا');
+        }
+
+        function loadReports() {
+            fetch('/get_reports')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('التقارير:', data);
+                    alert('سيتم عرض التقارير المفصلة هنا');
+                })
+                .catch(error => {
+                    console.error('خطأ في جلب التقارير:', error);
+                    alert('حدث خطأ في جلب التقارير');
+                });
+        }
+
+        // البحث في المنتجات
+        document.getElementById('productSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#productsTable tr');
+            
+            rows.forEach(row => {
+                const productName = row.cells[0].textContent.toLowerCase();
+                const category = row.cells[1].textContent.toLowerCase();
+                
+                if (productName.includes(searchTerm) || category.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // تحديث الصفحة تلقائياً كل 30 ثانية
+        setInterval(() => {
+            location.reload();
+        }, 30000);
+    </script>
+</body>
+</html>

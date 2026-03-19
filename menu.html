@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMILE CAFE - قائمة الطعام</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d5b7 50%, #d4af37 100%);
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f5e6d3, #e8d5b7);
+            min-height: 100vh;
+            direction: rtl;
+            padding: 20px;
+        }
+        
+        .header {
+            background: #6f4e37;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            color: #6f4e37;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .product {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .product:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            border-color: #6f4e37;
+        }
+        
+        .product-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.9rem;
+        }
+        
+        .product-price {
+            font-size: 1.1rem;
+            color: #6f4e37;
+            font-weight: bold;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6f4e37;
+            margin-top: 30px;
+        }
+        
+        .last-updated {
+            background: rgba(111, 78, 55, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .auto-update {
+            background: #27ae60;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .products {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>☕ SMILE CAFE</h1>
+        <p>قائمة الطعام الرقمية</p>
+    </div>
+
+    <div class="container">
+        <div id="menu-content">
+            <!-- سيتم تحميل القائمة هنا -->
+        </div>
+        
+        <div class="footer">
+            <p>🌟 SMILE CAFE - قائمة الطعام الرقمية</p>
+            <div class="last-updated" id="last-updated">
+                جاري تحميل القائمة...
+            </div>
+            <div class="auto-update">
+                🔄 تحديث تلقائي للأسعار
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // تحميل القائمة
+        async function loadMenu() {
+            try {
+                const response = await fetch('/api/menu');
+                const products = await response.json();
+                
+                // تنظيم المنتجات حسب الفئة
+                const categories = {};
+                products.forEach(product => {
+                    if (!categories[product.category]) {
+                        categories[product.category] = [];
+                    }
+                    categories[product.category].push(product);
+                });
+
+                // عرض القائمة
+                displayMenu(categories);
+                
+                // تحديث وقت آخر تحديث
+                document.getElementById('last-updated').textContent = 
+                    `آخر تحديث: ${new Date().toLocaleTimeString('ar-EG')}`;
+                    
+            } catch (error) {
+                console.error('Error loading menu:', error);
+                document.getElementById('menu-content').innerHTML = `
+                    <div class="text-center p-5">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #e74c3c;"></i>
+                        <h3 class="mt-3">خطأ في تحميل القائمة</h3>
+                        <p>لا يمكن تحميل القائمة حالياً. يرجى المحاولة مرة أخرى.</p>
+                        <button class="btn-menu" onclick="location.reload()">
+                            <i class="fas fa-refresh"></i> إعادة المحاولة
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // عرض القائمة
+        function displayMenu(categories) {
+            const menuContent = document.getElementById('menu-content');
+            let html = '';
+
+            // أيقونات الفئات
+            const categoryIcons = {
+                'ساخن': 'fa-coffee',
+                'مثلج': 'fa-glass-water',
+                'وجبة': 'fa-utensils',
+                'بيتزا': 'fa-pizza-slice',
+                'كريب': 'fa-ice-cream',
+                'ساندوتش': 'fa-burger',
+                'شيشة': 'fa-smoking',
+                'حلويات': 'fa-ice-cream',
+                'خدمة': 'fa-concierge-bell'
+            };
+
+            // أسماء الفئات بالعربية
+            const categoryNames = {
+                'ساخن': 'المشروبات الساخنة',
+                'مثلج': 'المشروبات المثلجة',
+                'وجبة': 'الوجبات',
+                'بيتزا': 'البيتزا',
+                'كريب': 'الكريب',
+                'ساندوتش': 'السندوتشات',
+                'شيشة': 'الشيشة',
+                'حلويات': 'الحلويات',
+                'خدمة': 'الخدمات والإضافات'
+            };
+
+            for (const [category, items] of Object.entries(categories)) {
+                const icon = categoryIcons[category] || 'fa-coffee';
+                const name = categoryNames[category] || category;
+
+                html += `
+                    <div class="section">
+                        <h2>${name}</h2>
+                        <div class="products">
+                `;
+
+                items.forEach(item => {
+                    html += `
+                        <div class="product">
+                            <div class="product-icon">
+                                <i class="fas ${getProductIcon(item.name)}"></i>
+                            </div>
+                            <div class="product-name">${item.name}</div>
+                            <div class="product-price">${item.price.toFixed(2)} ج.م</div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            menuContent.innerHTML = html;
+        }
+
+        // الحصول على أيقونة المنتج
+        function getProductIcon(productName) {
+            const iconMap = {
+                "قهوة": "fa-coffee",
+                "نسكافيه": "fa-mug-hot",
+                "كابتشينو": "fa-mug-hot",
+                "لاتيه": "fa-mug-hot",
+                "شاي": "fa-mug-hot",
+                "شوكولاتة": "fa-mug-hot",
+                "آيس": "fa-glass-water",
+                "سموزي": "fa-glass-water",
+                "ميلك": "fa-glass-water",
+                "فرابيه": "fa-glass-water",
+                "وجبة": "fa-utensils",
+                "فرخة": "fa-drumstick-bite",
+                "برجر": "fa-burger",
+                "كفتة": "fa-drumstick-bite",
+                "بيتزا": "fa-pizza-slice",
+                "كريب": "fa-ice-cream",
+                "ساندوتش": "fa-burger",
+                "شيشة": "fa-smoking",
+                "حلوى": "fa-ice-cream",
+                "نوتيلا": "fa-ice-cream",
+                "فخفخينا": "fa-ice-cream"
+            };
+
+            for (const [key, icon] of Object.entries(iconMap)) {
+                if (productName.includes(key)) {
+                    return icon;
+                }
+            }
+
+            return "fa-coffee";
+        }
+
+        // تحميل القائمة عند فتح الصفحة
+        loadMenu();
+
+        // تحديث القائمة كل 5 دقائق
+        setInterval(loadMenu, 300000);
+
+        // تحديث الوقت كل ثانية
+        setInterval(() => {
+            document.getElementById('last-updated').textContent = 
+                `آخر تحديث: ${new Date().toLocaleTimeString('ar-EG')}`;
+        }, 1000);
+    </script>
+</body>
+</html>

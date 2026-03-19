@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 SMILE CAFE POS - النظام الاحترافي الكامل</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d5b7 50%, #d4af37 100%);
+            min-height: 100vh;
+            direction: rtl;
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* خلفية زخرفية للكافيه */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="100" fill="rgba(111,78,55,0.03)">☕</text></svg>') repeat;
+            background-size: 100px 100px;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.2;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.1;
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .cafe-header {
+            background: linear-gradient(135deg, #6f4e37 0%, #8b5a3c 100%);
+            color: white;
+            padding: 50px 40px;
+            border-radius: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 50px rgba(111, 78, 55, 0.4);
+            border: 3px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .cafe-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="100" fill="rgba(255,255,255,0.05)">☕</text></svg>') repeat;
+            background-size: 60px 60px;
+        }
+
+        .cafe-logo {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .cafe-logo::after {
+            content: '☕';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            opacity: 0.2;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .cafe-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(45deg, #ffffff, #f5e6d3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cafe-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            font-style: italic;
+            position: relative;
+            z-index: 2;
+            font-weight: 300;
+        }
+
+        .main-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(111, 78, 55, 0.2);
+            padding: 30px;
+            transition: all 0.3s ease;
+            border: 2px solid #f5e6d3;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 60px rgba(111, 78, 55, 0.3);
+            border-color: #d4af37;
+        }
+
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4c1 100%);
+            opacity: 0.1;
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #6f4e37;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, #6f4e37, #d4af37);
+            border-radius: 2px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(245, 230, 211, 0.3);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(245, 230, 211, 0.5);
+            transform: translateX(5px);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            color: #6f4e37;
+            margin-left: 15px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .feature-text {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .product-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+            backdrop-filter: blur(15px);
+            border: 2px solid #f5e6d3;
+            border-radius: 25px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(111, 78, 55, 0.15);
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.6s ease;
+            z-index: 1;
+        }
+
+        .product-card:hover::before {
+            left: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(111, 78, 55, 0.3);
+            border-color: #d4af37;
+            border-width: 3px;
+        }
+
+        .product-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+            color: #6f4e37;
+            filter: drop-shadow(0 2px 4px rgba(111, 78, 55, 0.2));
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(245, 230, 211, 0.8));
+            border-radius: 50%;
+            border: 2px solid rgba(111, 78, 55, 0.2);
+        }
+
+        .product-card:hover .product-icon {
+            transform: scale(1.15) rotate(5deg);
+            color: #8b5a3c;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(212, 175, 55, 0.3));
+            border-color: #d4af37;
+        }
+
+        .product-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #6f4e37;
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid rgba(111, 78, 55, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6f4e37 0%, #8b5a3c 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(111, 78, 55, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(111, 78, 55, 0.4);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4c1 100%);
+            color: #2c3e50;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(212, 175, 55, 0.4);
+            color: #2c3e50;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #6f4e37 0%, #8b5a3c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(111, 78, 55, 0.3);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            transition: all 0.5s ease;
+        }
+
+        .stat-card:hover::before {
+            top: -30%;
+            right: -30%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(111, 78, 55, 0.4);
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-label {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(111, 78, 55, 0.1), rgba(139, 90, 60, 0.1));
+            border-radius: 20px;
+            margin-top: 30px;
+            color: #6f4e37;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .main-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .cafe-title {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- هيدر الكافيه الاحترافي -->
+        <div class="cafe-header">
+            <div class="cafe-logo">
+                <i class="fas fa-coffee"></i>
+            </div>
+            <h1 class="cafe-title">SMILE CAFE</h1>
+            <p class="cafe-subtitle">نظام نقطة البيع الاحترافي المتكامل</p>
+        </div>
+
+        <!-- الإحصائيات الرئيسية -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">73</div>
+                <div class="stat-label">منتج متنوع</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">أقسام منظمة</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">لغة عربية</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">✨</div>
+                <div class="stat-label">تصميم احترافي</div>
+            </div>
+        </div>
+
+        <!-- الأقسام الرئيسية -->
+        <div class="main-sections">
+            <!-- قسم نقطة البيع -->
+            <div class="section-card">
+                <h2 class="section-title">🛒 نقطة البيع</h2>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <i class="fas fa-shopping-cart feature-icon"></i>
+                        <span class="feature-text">73 منتج مع أيقونات مخصصة</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-th-large feature-icon"></i>
+                        <span class="feature-text">8 أقسام منظمة (ساخن، مثلج، وجبات، إلخ)</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-calculator feature-icon"></i>
+                        <span class="feature-text">حساب تلقائي مع خدمة 12%</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-receipt feature-icon"></i>
+                        <span class="feature-text">نظام طلبات متكامل</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-language feature-icon"></i>
+                        <span class="feature-text">واجهة عربية بالكامل</span>
+                    </li>
+                </ul>
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="#pos-section" class="btn-primary">
+                        <i class="fas fa-eye"></i> عرض نقطة البيع
+                    </a>
+                </div>
+            </div>
+
+            <!-- قسم لوحة التحكم -->
+            <div class="section-card">
+                <h2 class="section-title">⚙️ لوحة التحكم</h2>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <span class="feature-text">إحصائيات المبيعات اليومية</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-edit feature-icon"></i>
+                        <span class="feature-text">تحديث أسعار المنتجات</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-warehouse feature-icon"></i>
+                        <span class="feature-text">إدارة المخزون والمواد الخام</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-list-alt feature-icon"></i>
+                        <span class="feature-text">عرض آخر الطلبات</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-users feature-icon"></i>
+                        <span class="feature-text">إدارة بيانات الموظفين</span>
+                    </li>
+                </ul>
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="#admin-section" class="btn-secondary">
+                        <i class="fas fa-cog"></i> عرض لوحة التحكم
+                    </a>
+                </div>
+            </div>
+
+            <!-- قسم المميزات -->
+            <div class="section-card">
+                <h2 class="section-title">🌟 المميزات التقنية</h2>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <i class="fas fa-palette feature-icon"></i>
+                        <span class="feature-text">تصميم زجاجي عصري</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-magic feature-icon"></i>
+                        <span class="feature-text">تأثيرات حركة احترافية</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-mobile-alt feature-icon"></i>
+                        <span class="feature-text">تصميم متجاوب لجميع الأجهزة</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-icons feature-icon"></i>
+                        <span class="feature-text">أيقونات مخصصة لكل منتج</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-database feature-icon"></i>
+                        <span class="feature-text">نظام قاعدة بيانات متكامل</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- عرض منتجات تجريبية -->
+        <div id="pos-section" class="section-card">
+            <h2 class="section-title">☕ منتجات تجريبية</h2>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-icon">
+                        <i class="fas fa-coffee"></i>
+                    </div>
+                    <div class="product-name">قهوة تركي</div>
+                    <div class="product-price">35.00 ج.م</div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">
+                        <i class="fas fa-pizza-slice"></i>
+                    </div>
+                    <div class="product-name">بيتزا مارجريتا</div>
+                    <div class="product-price">120.00 ج.م</div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">
+                        <i class="fas fa-smoking"></i>
+                    </div>
+                    <div class="product-name">حجر فاخر تفاح</div>
+                    <div class="product-price">80.00 ج.م</div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">
+                        <i class="fas fa-ice-cream"></i>
+                    </div>
+                    <div class="product-name">زبادي خلاط فواكه</div>
+                    <div class="product-price">45.00 ج.م</div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">
+                        <i class="fas fa-burger"></i>
+                    </div>
+                    <div class="product-name">برجر جبنة</div>
+                    <div class="product-price">95.00 ج.م</div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">
+                        <i class="fas fa-blender"></i>
+                    </div>
+                    <div class="product-name">سموزي مانجو</div>
+                    <div class="product-price">60.00 ج.م</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- عرض لوحة التحكم -->
+        <div id="admin-section" class="section-card">
+            <h2 class="section-title">📊 لوحة التحكم التجريبية</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">١٢٥٠</div>
+                    <div class="stat-label">ج.م مبيعات اليوم</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">٤٥</div>
+                    <div class="stat-label">طلب اليوم</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">٨٨</div>
+                    <div class="stat-label">موظف نشط</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">١٠٠%</div>
+                    <div class="stat-label">مخزون متوفر</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="#pos-section" class="btn-primary" style="margin-left: 10px;">
+                    <i class="fas fa-arrow-up"></i> العودة لنقطة البيع
+                </a>
+                <a href="#top" class="btn-secondary">
+                    <i class="fas fa-arrow-up"></i> العودة للأعلى
+                </a>
+            </div>
+        </div>
+
+        <!-- تذييل الصفحة -->
+        <div class="footer">
+            <p>🌟 SMILE CAFE POS - نظام نقطة البيع الاحترافي</p>
+            <p>جميع الحقوق محفوظة © 2024</p>
+            <p>تم تطويره بواسطة تقنيات متقدمة</p>
+        </div>
+    </div>
+
+    <script>
+        // تأثيرات إضافية عند التمرير السلس
+        document.addEventListener('DOMContentLoaded', function() {
+            // إضافة تأثيرات التمرير السلس للبطاقات
+            const cards = document.querySelectorAll('.product-card, .stat-card, .section-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.animation = 'fadeInUp 0.8s ease-out forwards';
+            });
+
+            // تأثيرات التمرير السلس للعناصر
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.feature-item').forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                observer.observe(item);
+            });
+
+            // إضافة تأثيرات النقر
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+
+            // تنفيذ سلس
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+
+        // سلاسة تنعيم سلس
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

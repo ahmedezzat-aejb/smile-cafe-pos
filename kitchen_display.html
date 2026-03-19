@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMILE CAFE - شاشة المطبخ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            direction: rtl;
+            padding: 10px;
+            color: white;
+        }
+
+        .kitchen-header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3);
+        }
+
+        .kitchen-title {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .orders-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .order-card {
+            background: white;
+            color: #2c3e50;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .order-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .order-card.completed::before {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .order-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .order-table {
+            background: #3498db;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .order-time {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .order-items {
+            margin-bottom: 15px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            font-weight: 500;
+        }
+
+        .item-quantity {
+            background: #f39c12;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-complete {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-complete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-priority {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-priority:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .priority-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .new-order {
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .sound-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: none;
+            animation: soundPulse 1s ease;
+        }
+
+        @keyframes soundPulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .stats-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item {
+            flex: 1;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .orders-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .kitchen-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- رأس شاشة المطبخ -->
+        <div class="kitchen-header">
+            <h1 class="kitchen-title">
+                <i class="fas fa-utensils"></i> شاشة المطبخ
+            </h1>
+            <p>SMILE CAFE - نظام إعداد الطلبات</p>
+        </div>
+
+        <!-- شريط الإحصائيات -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number" id="pendingCount">0</div>
+                <div class="stat-label">طلبات معلقة</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="completedCount">0</div>
+                <div class="stat-label">طلبات منجزة</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="todayCount">0</div>
+                <div class="stat-label">إجمالي اليوم</div>
+            </div>
+        </div>
+
+        <!-- حاوية الطلبات -->
+        <div class="orders-container" id="ordersContainer">
+            <div class="text-center p-5">
+                <i class="fas fa-clock" style="font-size: 3rem; color: #7f8c8d;"></i>
+                <h3 class="mt-3">لا توجد طلبات حالياً</h3>
+                <p>سيتم عرض الطلبات الجديدة هنا تلقائياً</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- مؤشر الصوت -->
+    <div class="sound-indicator" id="soundIndicator">
+        <i class="fas fa-bell"></i> طلب جديد!
+    </div>
+
+    <script>
+        let orders = [];
+        let completedOrders = new Set();
+
+        // تحميل الطلبات
+        async function loadOrders() {
+            try {
+                const response = await fetch('/api/orders');
+                orders = await response.json();
+                displayOrders();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading orders:', error);
+            }
+        }
+
+        // عرض الطلبات
+        function displayOrders() {
+            const container = document.getElementById('ordersContainer');
+            
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center p-5">
+                        <i class="fas fa-clock" style="font-size: 3rem; color: #7f8c8d;"></i>
+                        <h3 class="mt-3">لا توجد طلبات حالياً</h3>
+                        <p>سيتم عرض الطلبات الجديدة هنا تلقائياً</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            
+            orders.forEach(order => {
+                const isCompleted = completedOrders.has(order.id);
+                const orderClass = isCompleted ? 'completed' : 'new-order';
+                const priorityBadge = order.priority ? '<div class="priority-badge">عاجل</div>' : '';
+                
+                html += `
+                    <div class="order-card ${orderClass}" id="order-${order.id}">
+                        ${priorityBadge}
+                        <div class="order-header">
+                            <div>
+                                <div class="order-number">#${order.id}</div>
+                                <div class="order-time">${formatTime(order.timestamp)}</div>
+                            </div>
+                            <div class="order-table">طاولة ${order.table_num}</div>
+                        </div>
+                        <div class="order-items">
+                            ${formatOrderItems(order.items)}
+                        </div>
+                        <div class="order-actions">
+                            ${isCompleted ? 
+                                '<div class="text-success text-center"><i class="fas fa-check-circle"></i> تم الإعداد</div>' :
+                                `<button class="btn-complete" onclick="completeOrder(${order.id})">
+                                    <i class="fas fa-check"></i> تم الإعداد
+                                </button>
+                                <button class="btn-priority" onclick="togglePriority(${order.id})">
+                                    <i class="fas fa-exclamation-triangle"></i> عاجل
+                                </button>`
+                            }
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // تنسيق عناصر الطلب
+        function formatOrderItems(items) {
+            try {
+                const itemsArray = typeof items === 'string' ? JSON.parse(items) : items;
+                return itemsArray.map(item => `
+                    <div class="order-item">
+                        <span class="item-name">${item}</span>
+                    </div>
+                `).join('');
+            } catch (error) {
+                return `<div class="order-item"><span class="item-name">${items}</span></div>`;
+            }
+        }
+
+        // تنسيق الوقت
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('ar-EG', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // إكمال الطلب
+        async function completeOrder(orderId) {
+            try {
+                const response = await fetch(`/complete_order/${orderId}`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    completedOrders.add(orderId);
+                    displayOrders();
+                    updateStats();
+                    showNotification('تم إعداد الطلب بنجاح');
+                }
+            } catch (error) {
+                console.error('Error completing order:', error);
+                showNotification('خطأ في إكمال الطلب', 'error');
+            }
+        }
+
+        // تغيير الأولوية
+        async function togglePriority(orderId) {
+            try {
+                const response = await fetch(`/toggle_priority/${orderId}`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    loadOrders();
+                }
+            } catch (error) {
+                console.error('Error toggling priority:', error);
+            }
+        }
+
+        // تحديث الإحصائيات
+        function updateStats() {
+            const pending = orders.filter(o => !completedOrders.has(o.id)).length;
+            const completed = completedOrders.size;
+            const today = orders.length;
+            
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('todayCount').textContent = today;
+        }
+
+        // عرض الإشعار
+        function showNotification(message, type = 'success') {
+            const indicator = document.getElementById('soundIndicator');
+            
+            if (type === 'error') {
+                indicator.style.background = 'rgba(231, 76, 60, 0.9)';
+            } else {
+                indicator.style.background = 'rgba(39, 174, 96, 0.9)';
+            }
+            
+            indicator.innerHTML = `<i class="fas fa-bell"></i> ${message}`;
+            indicator.style.display = 'block';
+            
+            // تشغيل صوت الإشعار
+            playNotificationSound();
+            
+            setTimeout(() => {
+                indicator.style.display = 'none';
+            }, 3000);
+        }
+
+        // تشغيل صوت الإشعار
+        function playNotificationSound() {
+            try {
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2Gy/DaiTQGGGS56+2mSgwOUarp7blmFgU7k9n1unEiBC13yO/eizEIHWq+8+OZURE');
+                audio.play();
+            } catch (error) {
+                console.log('Cannot play notification sound');
+            }
+        }
+
+        // التحقق من الطلبات الجديدة
+        let lastOrderCount = 0;
+        async function checkNewOrders() {
+            await loadOrders();
+            
+            if (orders.length > lastOrderCount) {
+                const newOrdersCount = orders.length - lastOrderCount;
+                if (newOrdersCount > 0) {
+                    showNotification(`طلب${newOrdersCount > 1 ? 'ات' : ''} جديد${newOrdersCount > 1 ? '' : ''}!`);
+                }
+            }
+            
+            lastOrderCount = orders.length;
+        }
+
+        // تشغيل التطبيق
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOrders();
+            
+            // تحديث كل 5 ثواني
+            setInterval(checkNewOrders, 5000);
+        });
+    </script>
+</body>
+</html>

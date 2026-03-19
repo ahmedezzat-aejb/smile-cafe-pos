@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>SMILE CAFE - نظام نقطة البيع</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f5e6d3, #e8d5b7, #d4af37);
+            min-height: 100vh;
+            direction: rtl;
+            padding: 20px;
+        }
+        
+        .header {
+            background: #6f4e37;
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            color: #6f4e37;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .product {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-color: #6f4e37;
+        }
+        
+        .product-icon {
+            font-size: 2rem;
+            color: #6f4e37;
+            margin-bottom: 10px;
+        }
+        
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .product-price {
+            font-size: 1.2rem;
+            color: #6f4e37;
+            font-weight: bold;
+        }
+        
+        .order-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .order-section h2 {
+            color: #6f4e37;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            background: #6f4e37;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #8b5a3c;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #27ae60;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .order-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .order-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-summary {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .summary-row.total {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #6f4e37;
+            border-top: 2px solid #dee2e6;
+            padding-top: 10px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #6f4e37;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background: #6f4e37;
+            color: white;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .success-message {
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>☕ SMILE CAFE</h1>
+            <p>نظام نقطة البيع الاحترافي</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            تم تأكيد الطلب بنجاح!
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">73</div>
+                <div class="stat-label">منتج</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">أقسام</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">عربي</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">✨</div>
+                <div class="stat-label">احترافي</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📦 المنتجات</h2>
+            
+            <!-- قسم المشروبات الساخنة -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #6f4e37; margin-bottom: 15px;">☕ مشروبات ساخنة</h3>
+                <div class="products">
+                    <div class="product" onclick="addToOrder('قهوة تركي', 35)">
+                        <div class="product-icon">☕</div>
+                        <div class="product-name">قهوة تركي</div>
+                        <div class="product-price">35.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('قهوة تركي محوج', 40)">
+                        <div class="product-icon">☕</div>
+                        <div class="product-name">قهوة محوج</div>
+                        <div class="product-price">40.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('قهوة باللبن', 50)">
+                        <div class="product-icon">☕</div>
+                        <div class="product-name">قهوة باللبن</div>
+                        <div class="product-price">50.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('نسكافيه (بلاك)', 40)">
+                        <div class="product-icon">☕</div>
+                        <div class="product-name">نسكافيه بلاك</div>
+                        <div class="product-price">40.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('نسكافيه (جولد)', 45)">
+                        <div class="product-icon">☕</div>
+                        <div class="product-name">نسكافيه جولد</div>
+                        <div class="product-price">45.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('كابتشينو (S)', 60)">
+                        <div class="product-icon">☕</div>
+                        <div class="product-name">كابتشينو S</div>
+                        <div class="product-price">60.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('كابتشينو (L)', 70)">
+                        <div class="product-icon">☕</div>
+                        <div class="product-name">كابتشينو L</div>
+                        <div class="product-price">70.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('لاتيه', 65)">
+                        <div class="product-icon">☕</div>
+                        <div class="product-name">لاتيه</div>
+                        <div class="product-price">65.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('هوت شوكلت', 65)">
+                        <div class="product-icon">🔥</div>
+                        <div class="product-name">هوت شوكلت</div>
+                        <div class="product-price">65.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('شاي سادة', 20)">
+                        <div class="product-icon">🍵</div>
+                        <div class="product-name">شاي سادة</div>
+                        <div class="product-price">20.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('شاي فتلة', 25)">
+                        <div class="product-icon">🍵</div>
+                        <div class="product-name">شاي فتلة</div>
+                        <div class="product-price">25.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('شاي أخضر', 25)">
+                        <div class="product-icon">🍵</div>
+                        <div class="product-name">شاي أخضر</div>
+                        <div class="product-price">25.00 ج.م</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم المشروبات المثلجة -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #6f4e37; margin-bottom: 15px;">🧊 مشروبات مثلجة</h3>
+                <div class="products">
+                    <div class="product" onclick="addToOrder('آيس كوفي', 65)">
+                        <div class="product-icon">🧊</div>
+                        <div class="product-name">آيس كوفي</div>
+                        <div class="product-price">65.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('آيس لاتيه', 70)">
+                        <div class="product-icon">🧊</div>
+                        <div class="product-name">آيس لاتيه</div>
+                        <div class="product-price">70.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('آيس موكا', 75)">
+                        <div class="product-icon">🧊</div>
+                        <div class="product-name">آيس موكا</div>
+                        <div class="product-price">75.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('فرابيه أوريو', 75)">
+                        <div class="product-icon">🥤</div>
+                        <div class="product-name">فرابيه أوريو</div>
+                        <div class="product-price">75.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('فرابيه كراميل', 75)">
+                        <div class="product-icon">🥤</div>
+                        <div class="product-name">فرابيه كراميل</div>
+                        <div class="product-price">75.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('سموزي مانجو', 60)">
+                        <div class="product-icon">🥤</div>
+                        <div class="product-name">سموزي مانجو</div>
+                        <div class="product-price">60.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('سموزي فراولة', 60)">
+                        <div class="product-icon">🥤</div>
+                        <div class="product-name">سموزي فراولة</div>
+                        <div class="product-price">60.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('سموزي خوخ', 60)">
+                        <div class="product-icon">🥤</div>
+                        <div class="product-name">سموزي خوخ</div>
+                        <div class="product-price">60.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('ميلك شيك فانيليا', 70)">
+                        <div class="product-icon">🥛</div>
+                        <div class="product-name">ميلك شيك فانيليا</div>
+                        <div class="product-price">70.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('ميلك شيك شوكولاتة', 70)">
+                        <div class="product-icon">🥛</div>
+                        <div class="product-name">ميلك شيك شوكولاتة</div>
+                        <div class="product-price">70.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('ميلك شيك مانجو', 70)">
+                        <div class="product-icon">🥛</div>
+                        <div class="product-name">ميلك شيك مانجو</div>
+                        <div class="product-price">70.00 ج.م</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم الوجبات -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #6f4e37; margin-bottom: 15px;">🍽️ وجبات</h3>
+                <div class="products">
+                    <div class="product" onclick="addToOrder('وجبة أولى (ربع فرخة)', 180)">
+                        <div class="product-icon">🍗</div>
+                        <div class="product-name">وجبة أولى</div>
+                        <div class="product-price">180.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('وجبة ثانية (2 برجر)', 190)">
+                        <div class="product-icon">🍔</div>
+                        <div class="product-name">وجبة ثانية</div>
+                        <div class="product-price">190.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('وجبة ثالثة (نصف فرخة)', 240)">
+                        <div class="product-icon">🍗</div>
+                        <div class="product-name">وجبة ثالثة</div>
+                        <div class="product-price">240.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('وجبة رابعة (كفتة+فرخة)', 210)">
+                        <div class="product-icon">🍽️</div>
+                        <div class="product-name">وجبة رابعة</div>
+                        <div class="product-price">210.00 ج.م</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم البيتزا والكريب -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #6f4e37; margin-bottom: 15px;">🍕 بيتزا وكريب</h3>
+                <div class="products">
+                    <div class="product" onclick="addToOrder('بيتزا مارجريتا (M)', 120)">
+                        <div class="product-icon">🍕</div>
+                        <div class="product-name">بيتزا مارجريتا M</div>
+                        <div class="product-price">120.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('بيتزا مارجريتا (L)', 140)">
+                        <div class="product-icon">🍕</div>
+                        <div class="product-name">بيتزا مارجريتا L</div>
+                        <div class="product-price">140.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('بيتزا مشكل جبن (M)', 140)">
+                        <div class="product-icon">🍕</div>
+                        <div class="product-name">بيتزا جبن M</div>
+                        <div class="product-price">140.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('بيتزا فراخ (M)', 160)">
+                        <div class="product-icon">🍕</div>
+                        <div class="product-name">بيتزا فراخ M</div>
+                        <div class="product-price">160.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('كريب نوتيلا (S)', 60)">
+                        <div class="product-icon">🥞</div>
+                        <div class="product-name">كريب نوتيلا S</div>
+                        <div class="product-price">60.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('كريب نوتيلا (L)', 80)">
+                        <div class="product-icon">🥞</div>
+                        <div class="product-name">كريب نوتيلا L</div>
+                        <div class="product-price">80.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('كريب فراخ بانيه (S)', 110)">
+                        <div class="product-icon">🥞</div>
+                        <div class="product-name">كريب فراخ S</div>
+                        <div class="product-price">110.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('كريب فراخ بانيه (L)', 130)">
+                        <div class="product-icon">🥞</div>
+                        <div class="product-name">كريب فراخ L</div>
+                        <div class="product-price">130.00 ج.م</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم السندوتشات -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #6f4e37; margin-bottom: 15px;">🥪 سندوتشات</h3>
+                <div class="products">
+                    <div class="product" onclick="addToOrder('برجر سادة', 80)">
+                        <div class="product-icon">🍔</div>
+                        <div class="product-name">برجر سادة</div>
+                        <div class="product-price">80.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('برجر جبنة', 95)">
+                        <div class="product-icon">🍔</div>
+                        <div class="product-name">برجر جبنة</div>
+                        <div class="product-price">95.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('فراخ بانيه', 90)">
+                        <div class="product-icon">🍗</div>
+                        <div class="product-name">فراخ بانيه</div>
+                        <div class="product-price">90.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('هوت دوج', 75)">
+                        <div class="product-icon">🌭</div>
+                        <div class="product-name">هوت دوج</div>
+                        <div class="product-price">75.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('بطاطس سوري', 50)">
+                        <div class="product-icon">🍟</div>
+                        <div class="product-name">بطاطس سوري</div>
+                        <div class="product-price">50.00 ج.م</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم الشيشة -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #6f4e37; margin-bottom: 15px;">💨 شيشة</h3>
+                <div class="products">
+                    <div class="product" onclick="addToOrder('حجر فاخر تفاح', 90)">
+                        <div class="product-icon">💨</div>
+                        <div class="product-name">حجر تفاح</div>
+                        <div class="product-price">90.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('حجر فاخر خوخ', 90)">
+                        <div class="product-icon">💨</div>
+                        <div class="product-name">حجر خوخ</div>
+                        <div class="product-price">90.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('حجر فاخر كريز', 90)">
+                        <div class="product-icon">💨</div>
+                        <div class="product-name">حجر كريز</div>
+                        <div class="product-price">90.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('حجر فاخر عنب', 90)">
+                        <div class="product-icon">💨</div>
+                        <div class="product-name">حجر عنب</div>
+                        <div class="product-price">90.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('حجر فاخر فراولة', 90)">
+                        <div class="product-icon">💨</div>
+                        <div class="product-name">حجر فراولة</div>
+                        <div class="product-price">90.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('حجر فاخر مانجو', 90)">
+                        <div class="product-icon">💨</div>
+                        <div class="product-name">حجر مانجو</div>
+                        <div class="product-price">90.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('حجر فاخر جوافة', 90)">
+                        <div class="product-icon">💨</div>
+                        <div class="product-name">حجر جوافة</div>
+                        <div class="product-price">90.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('حجر فاخر برتقال', 90)">
+                        <div class="product-icon">💨</div>
+                        <div class="product-name">حجر برتقال</div>
+                        <div class="product-price">90.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('حجر فاخر ليمون', 90)">
+                        <div class="product-icon">💨</div>
+                        <div class="product-name">حجر ليمون</div>
+                        <div class="product-price">90.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('حجر فاخر نعناع', 90)">
+                        <div class="product-icon">💨</div>
+                        <div class="product-name">حجر نعناع</div>
+                        <div class="product-price">90.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('حجر فاخر كركديه', 90)">
+                        <div class="product-icon">💨</div>
+                        <div class="product-name">حجر كركديه</div>
+                        <div class="product-price">90.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('حجر ميكس VIP', 100)">
+                        <div class="product-icon">💨</div>
+                        <div class="product-name">حجر ميكس VIP</div>
+                        <div class="product-price">100.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('حجر ميكس عادي', 80)">
+                        <div class="product-icon">💨</div>
+                        <div class="product-name">حجر ميكس عادي</div>
+                        <div class="product-price">80.00 ج.م</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم الحلويات -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #6f4e37; margin-bottom: 15px;">🍦 حلويات</h3>
+                <div class="products">
+                    <div class="product" onclick="addToOrder('فخفخينا (S)', 70)">
+                        <div class="product-icon">🍞</div>
+                        <div class="product-name">فخفخينا S</div>
+                        <div class="product-price">70.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('زبادي خلاط سادة', 40)">
+                        <div class="product-icon">🍦</div>
+                        <div class="product-name">زبادي خلاط سادة</div>
+                        <div class="product-price">40.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('زبادي خلاط فواكه', 45)">
+                        <div class="product-icon">🍦</div>
+                        <div class="product-name">زبادي خلاط فواكه</div>
+                        <div class="product-price">45.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('قنبلة سمايل', 50)">
+                        <div class="product-icon">💣</div>
+                        <div class="product-name">قنبلة سمايل</div>
+                        <div class="product-price">50.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('ميكس نوتيلا', 55)">
+                        <div class="product-icon">🍦</div>
+                        <div class="product-name">ميكس نوتيلا</div>
+                        <div class="product-price">55.00 ج.م</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم الخدمات -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #6f4e37; margin-bottom: 15px;">➕ خدمات</h3>
+                <div class="products">
+                    <div class="product" onclick="addToOrder('إضافة لي طبي', 20)">
+                        <div class="product-icon">➕</div>
+                        <div class="product-name">إضافة لي طبي</div>
+                        <div class="product-price">20.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('إضافة جبنة', 25)">
+                        <div class="product-icon">➕</div>
+                        <div class="product-name">إضافة جبنة</div>
+                        <div class="product-price">25.00 ج.م</div>
+                    </div>
+                    
+                    <div class="product" onclick="addToOrder('إضافة لحوم', 40)">
+                        <div class="product-icon">➕</div>
+                        <div class="product-name">إضافة لحوم</div>
+                        <div class="product-price">40.00 ج.م</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-section">
+            <h2>🛒 الطلب الحالي</h2>
+            
+            <div class="form-group">
+                <label for="tableNumber">رقم الطاولة:</label>
+                <input type="text" id="tableNumber" placeholder="أدخل رقم الطاولة">
+            </div>
+
+            <div class="order-items" id="orderItems">
+                <!-- سيتم إضافة العناصر هنا -->
+            </div>
+
+            <div class="order-summary">
+                <div class="summary-row">
+                    <span>المجموع الفرعي:</span>
+                    <span id="subtotal">0.00 ج.م</span>
+                </div>
+                <div class="summary-row">
+                    <span>الخدمة (12%):</span>
+                    <span id="service">0.00 ج.م</span>
+                </div>
+                <div class="summary-row total">
+                    <span>الإجمالي:</span>
+                    <span id="total">0.00 ج.م</span>
+                </div>
+            </div>
+
+            <div>
+                <button class="btn btn-success" onclick="confirmOrder()">
+                    ✅ تأكيد الطلب
+                </button>
+                <button class="btn btn-danger" onclick="clearOrder()">
+                    🗑️ مسح
+                </button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ لوحة التحكم</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>اسم المنتج</th>
+                        <th>الفئة</th>
+                        <th>السعر</th>
+                        <th>الكمية</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>قهوة تركي</td>
+                        <td>ساخن</td>
+                        <td>35.00 ج.م</td>
+                        <td>500</td>
+                    </tr>
+                    <tr>
+                        <td>شاي سادة</td>
+                        <td>ساخن</td>
+                        <td>20.00 ج.م</td>
+                        <td>300</td>
+                    </tr>
+                    <tr>
+                        <td>بيتزا مارجريتا</td>
+                        <td>بيتزا</td>
+                        <td>120.00 ج.م</td>
+                        <td>100</td>
+                    </tr>
+                    <tr>
+                        <td>حجر فاخر تفاح</td>
+                        <td>شيشة</td>
+                        <td>90.00 ج.م</td>
+                        <td>50</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn" onclick="showProducts()">
+                    📦 عرض جميع المنتجات
+                </button>
+                <button class="btn" onclick="showOrders()">
+                    📋 عرض الطلبات
+                </button>
+                <button class="btn" onclick="showInventory()">
+                    📦 المخزون
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let orderItems = [];
+        let selectedProducts = new Set();
+
+        function addToOrder(productName, price) {
+            const existingItem = orderItems.find(item => item.name === productName);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                orderItems.push({
+                    name: productName,
+                    price: price,
+                    quantity: 1
+                });
+            }
+            
+            updateOrderDisplay();
+        }
+
+        function removeFromOrder(productName) {
+            const itemIndex = orderItems.findIndex(item => item.name === productName);
+            if (itemIndex > -1) {
+                if (orderItems[itemIndex].quantity > 1) {
+                    orderItems[itemIndex].quantity--;
+                } else {
+                    orderItems.splice(itemIndex, 1);
+                }
+            }
+            updateOrderDisplay();
+        }
+
+        function updateOrderDisplay() {
+            const orderItemsContainer = document.getElementById('orderItems');
+            orderItemsContainer.innerHTML = '';
+            
+            let subtotal = 0;
+            
+            orderItems.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                
+                const itemElement = document.createElement('div');
+                itemElement.className = 'order-item';
+                itemElement.innerHTML = `
+                    <span>${item.name}</span>
+                    <span>
+                        <button onclick="removeFromOrder('${item.name}')" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 3px; margin: 0 5px;">-</button>
+                        ${item.quantity}
+                        <button onclick="addToOrder('${item.name}', ${item.price})" style="background: #27ae60; color: white; border: none; padding: 5px 10px; border-radius: 3px; margin: 0 5px;">+</button>
+                        ${itemTotal.toFixed(2)} ج.م
+                    </span>
+                `;
+                orderItemsContainer.appendChild(itemElement);
+            });
+            
+            const service = subtotal * 0.12;
+            const total = subtotal + service;
+            
+            document.getElementById('subtotal').textContent = `${subtotal.toFixed(2)} ج.م`;
+            document.getElementById('service').textContent = `${service.toFixed(2)} ج.م`;
+            document.getElementById('total').textContent = `${total.toFixed(2)} ج.م`;
+        }
+
+        function clearOrder() {
+            orderItems = [];
+            selectedProducts.clear();
+            updateOrderDisplay();
+        }
+
+        function confirmOrder() {
+            const tableNumber = document.getElementById('tableNumber').value;
+            
+            if (!tableNumber) {
+                alert('يرجى إدخال رقم الطاولة');
+                return;
+            }
+            
+            if (orderItems.length === 0) {
+                alert('يرجى اختيار منتجات على الأقل');
+                return;
+            }
+            
+            const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const service = subtotal * 0.12;
+            const total = subtotal + service;
+            
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            successMessage.innerHTML = `
+                ✅ تم تأكيد الطلب بنجاح!<br>
+                الطاولة: ${tableNumber}<br>
+                الإجمالي: ${total.toFixed(2)} ج.م<br>
+                عدد المنتجات: ${orderItems.length}
+            `;
+            
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
+            
+            clearOrder();
+            document.getElementById('tableNumber').value = '';
+        }
+
+        function showProducts() {
+            alert('هناك 73 منتج متنوع في النظام!\n\nالأقسام:\n• مشروبات ساخنة\n• مشروبات مثلجة\n• وجبات\n• بيتزا\n• كريب\n• سندوتشات\n• شيشة\n• حلويات');
+        }
+
+        function showOrders() {
+            alert('نظام إدارة الطلبات:\n\n• عرض جميع الطلبات\n• فلترة حسب التاريخ\n• طباعة الفواتير\n• تعديل حالة الطلب');
+        }
+
+        function showInventory() {
+            alert('نظام إدارة المخزون:\n\n• مراقبة الكميات المتاحة\n• تنبيهات عند نفاد المخزون\n• إضافة مواد خام\n• تقاريرات المخزون');
+        }
+
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            updateOrderDisplay();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMILE CAFE - لوحة التحكم للمدير</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f5e6d3, #e8d5b7, #d4af37);
+            min-height: 100vh;
+            direction: rtl;
+            padding: 20px;
+        }
+        
+        .header {
+            background: #6f4e37;
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .card h3 {
+            color: #6f4e37;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #6f4e37;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #6f4e37;
+            outline: none;
+        }
+        
+        .btn {
+            background: #6f4e37;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #8b5a3c;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #27ae60;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .table th, .table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .table th {
+            background: #6f4e37;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .qr-section {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .qr-section h3 {
+            color: #6f4e37;
+            margin-bottom: 20px;
+        }
+        
+        .qr-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .last-updated {
+            background: rgba(111, 78, 55, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #6f4e37;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ لوحة التحكم للمدير</h1>
+            <p>SMILE CAFE - نظام إدارة متقدم</p>
+        </div>
+
+        <div class="alert alert-success" id="successAlert">
+            ✅ تم حفظ التغييرات بنجاح!
+        </div>
+
+        <div class="alert alert-danger" id="errorAlert">
+            ❌ حدث خطأ، يرجى المحاولة مرة أخرى.
+        </div>
+
+        <div class="alert alert-info" id="infoAlert">
+            ℹ️ جاري معالجة طلبك...
+        </div>
+
+        <!-- الإحصائيات الرئيسية -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">56</div>
+                <div class="stat-label">منتج فعال</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">أقسام</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12%</div>
+                <div class="stat-label">خدمة</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">✨</div>
+                <div class="stat-label">نظام متصل</div>
+            </div>
+        </div>
+
+        <!-- لوحة التحكم الرئيسية -->
+        <div class="dashboard">
+            <!-- قسم إدارة المنتجات -->
+            <div class="card">
+                <h3>📦 إدارة المنتجات</h3>
+                
+                <div class="form-group">
+                    <label for="productSelect">اختر المنتج:</label>
+                    <select id="productSelect">
+                        <option value="">-- اختر منتج --</option>
+                        <option value="قهوة تركي">قهوة تركي - 35.00 ج.م</option>
+                        <option value="قهوة محوج">قهوة محوج - 40.00 ج.م</option>
+                        <option value="نسكافيه بلاك">نسكافيه بلاك - 40.00 ج.م</option>
+                        <option value="كابتشينو S">كابتشينو S - 60.00 ج.م</option>
+                        <option value="كابتشينو L">كابتشينو L - 70.00 ج.م</option>
+                        <option value="آيس كوفي">آيس كوفي - 65.00 ج.م</option>
+                        <option value="بيتزا مارجريتا M">بيتزا مارجريتا M - 120.00 ج.م</option>
+                        <option value="بيتزا مارجريتا L">بيتزا مارجريتا L - 140.00 ج.م</option>
+                        <option value="حجر فاخر تفاح">حجر فاخر تفاح - 90.00 ج.م</option>
+                        <option value="حجر ميكس VIP">حجر ميكس VIP - 100.00 ج.م</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newPrice">السعر الجديد:</label>
+                    <input type="number" id="newPrice" placeholder="أدخل السعر الجديد" step="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label for="newName">الاسم الجديد (اختياري):</label>
+                    <input type="text" id="newName" placeholder="أدخل الاسم الجديد">
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="updateProduct()">
+                        💾 تحديث المنتج
+                    </button>
+                    <button class="btn btn-primary" onclick="addNewProduct()">
+                        ➕ إضافة منتج جديد
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteProduct()">
+                        🗑️ حذف المنتج
+                    </button>
+                </div>
+            </div>
+
+            <!-- قسم إدارة الأسعار -->
+            <div class="card">
+                <h3>💰 إدارة الأسعار</h3>
+                
+                <div class="form-group">
+                    <label for="priceUpdate">تحديث الأسعار بالجملة:</label>
+                    <select id="priceUpdate">
+                        <option value="increase5">زيادة 5%</option>
+                        <option value="increase10">زيادة 10%</option>
+                        <option value="decrease5">نقصان 5%</option>
+                        <option value="decrease10">نقصان 10%</option>
+                        <option value="custom">نسبة مخصصة</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="customPercentGroup" style="display: none;">
+                    <label for="customPercent">النسبة المخصصة:</label>
+                    <input type="number" id="customPercent" placeholder="أدخل النسبة" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="updateAll"> تحديث جميع المنتجات
+                    </label>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="updatePrices()">
+                        🔄 تحديث الأسعار
+                    </button>
+                    <button class="btn btn-primary" onclick="resetPrices()">
+                        🔄 إعادة تعيين الأسعار
+                    </button>
+                </div>
+            </div>
+
+            <!-- قسم QR Code -->
+            <div class="card">
+                <h3>📱 QR Code للقائمة</h3>
+                
+                <div class="form-group">
+                    <label>إعدادات QR Code:</label>
+                    <select id="qrSettings">
+                        <option value="current">استخدام القائمة الحالية</option>
+                        <option value="custom">قائمة مخصصة</option>
+                    </select>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="generateQR()">
+                        📱 إنشاء QR Code
+                    </button>
+                    <button class="btn btn-success" onclick="downloadQR()">
+                        📥 تحميل QR Code
+                    </button>
+                    <button class="btn btn-primary" onclick="printQR()">
+                        🖨️ طباعة QR Code
+                    </button>
+                </div>
+                
+                <div class="last-updated" id="qrLastUpdated">
+                    📅 آخر تحديث: ---
+                </div>
+            </div>
+
+            <!-- قسم الإعدادات -->
+            <div class="card">
+                <h3>⚙️ إعدادات النظام</h3>
+                
+                <div class="form-group">
+                    <label for="serviceCharge">نسبة الخدمة (%):</label>
+                    <input type="number" id="serviceCharge" value="12" min="0" max="50" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="restaurantName">اسم المطعم:</label>
+                    <input type="text" id="restaurantName" value="SMILE CAFE">
+                </div>
+                
+                <div class="form-group">
+                    <label for="autoUpdate">تحديث تلقائي (دقائق):</label>
+                    <select id="autoUpdate">
+                        <option value="5">كل 5 دقائق</option>
+                        <option value="10">كل 10 دقائق</option>
+                        <option value="15">كل 15 دقائق</option>
+                        <option value="30">كل 30 دقيقة</option>
+                        <option value="60">كل ساعة</option>
+                    </select>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="saveSettings()">
+                        💾 حفظ الإعدادات
+                    </button>
+                    <button class="btn btn-primary" onclick="exportData()">
+                        📤 تصدير البيانات
+                    </button>
+                    <button class="btn btn-primary" onclick="importData()">
+                        📥 استيراد البيانات
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم التقارير -->
+        <div class="card">
+            <h3>📊 التقارير والإحصائيات</h3>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="generateReport('daily')">
+                    📈 تقرير يومي
+                </button>
+                <button class="btn btn-primary" onclick="generateReport('weekly')">
+                    📊 تقرير أسبوعي
+                </button>
+                <button class="btn btn-primary" onclick="generateReport('monthly')">
+                    📅 تقرير شهري
+                </button>
+                <button class="btn btn-success" onclick="exportReport()">
+                    📥 تصدير التقرير
+                </button>
+            </div>
+            
+            <div id="reportContent" style="margin-top: 20px;">
+                <!-- سيتم عرض التقرير هنا -->
+            </div>
+        </div>
+
+        <!-- قسم سجل التغييرات -->
+        <div class="card">
+            <h3>📝 سجل التغييرات</h3>
+            
+            <div class="form-group">
+                <label>عرض آخر:</label>
+                <select id="logFilter">
+                    <option value="10">10 تغييرات</option>
+                    <option value="25">25 تغيير</option>
+                    <option value="50">50 تغيير</option>
+                    <option value="all">جميع التغييرات</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-primary" onclick="loadLogs()">
+                🔄 تحديث السجل
+            </button>
+            
+            <div id="logContent" style="margin-top: 20px;">
+                <!-- سيتم عرض السجل هنا -->
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding: 20px; background: rgba(111, 78, 55, 0.1); border-radius: 10px;">
+            <p>🌟 SMILE CAFE - لوحة التحكم المتقدمة</p>
+            <div class="last-updated" id="systemLastUpdated">
+                📅 آخر تحديث: ---
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // بيانات النظام
+        let systemData = {
+            products: {},
+            settings: {
+                serviceCharge: 12,
+                restaurantName: 'SMILE CAFE',
+                autoUpdate: 5
+            },
+            logs: []
+        };
+
+        // تحميل البيانات عند بدء الصفحة
+        window.onload = function() {
+            loadSystemData();
+            updateLastUpdated();
+            loadLogs();
+        };
+
+        // تحميل بيانات النظام
+        async function loadSystemData() {
+            try {
+                const response = await fetch('/api/menu');
+                const data = await response.json();
+                
+                // تحويل البيانات إلى كائن المنتجات
+                data.sections.forEach(section => {
+                    section.forEach(product => {
+                        systemData.products[product.name] = {
+                            price: product.price,
+                            icon: product.icon,
+                            section: Object.keys(data.sections).find(key => data.sections[key].includes(product))
+                        };
+                    });
+                });
+                
+                updateProductSelect();
+            } catch (error) {
+                console.error('Error loading system data:', error);
+            }
+        }
+
+        // تحديث قائمة المنتجات
+        function updateProductSelect() {
+            const select = document.getElementById('productSelect');
+            select.innerHTML = '<option value="">-- اختر منتج --</option>';
+            
+            Object.keys(systemData.products).forEach(name => {
+                const product = systemData.products[name];
+                select.innerHTML += `<option value="${name}">${name} - ${product.price.toFixed(2)} ج.م</option>`;
+            });
+        }
+
+        // تحديث المنتج
+        function updateProduct() {
+            const productName = document.getElementById('productSelect').value;
+            const newPrice = parseFloat(document.getElementById('newPrice').value);
+            const newName = document.getElementById('newName').value;
+            
+            if (!productName || !newPrice) {
+                showAlert('error', 'يرجى اختيار منتج وإدخال السعر الجديد');
+                return;
+            }
+            
+            // تحديث المنتج
+            if (newName) {
+                systemData.products[newName] = {
+                    ...systemData.products[productName],
+                    price: newPrice,
+                    name: newName
+                };
+                delete systemData.products[productName];
+            } else {
+                systemData.products[productName].price = newPrice;
+            }
+            
+            // إضافة سجل التغيير
+            addLog(`تحديث المنتج: ${productName} -> ${newName || productName} (${newPrice} ج.م)`);
+            
+            // حفظ البيانات
+            saveSystemData();
+            
+            // تحديث الواجهة
+            updateProductSelect();
+            showAlert('success', 'تم تحديث المنتج بنجاح');
+            
+            // مسح الحقول
+            document.getElementById('newPrice').value = '';
+            document.getElementById('newName').value = '';
+            document.getElementById('productSelect').value = '';
+        }
+
+        // إضافة منتج جديد
+        function addNewProduct() {
+            const name = document.getElementById('newName').value;
+            const price = parseFloat(document.getElementById('newPrice').value);
+            
+            if (!name || !price) {
+                showAlert('error', 'يرجى إدخال اسم المنتج والسعر');
+                return;
+            }
+            
+            systemData.products[name] = {
+                price: price,
+                icon: '📦',
+                section: 'جديد'
+            };
+            
+            addLog(`إضافة منتج جديد: ${name} (${price} ج.م)`);
+            saveSystemData();
+            updateProductSelect();
+            showAlert('success', 'تم إضافة المنتج بنجاح');
+            
+            document.getElementById('newName').value = '';
+            document.getElementById('newPrice').value = '';
+        }
+
+        // حذف المنتج
+        function deleteProduct() {
+            const productName = document.getElementById('productSelect').value;
+            
+            if (!productName) {
+                showAlert('error', 'يرجى اختيار منتج للحذف');
+                return;
+            }
+            
+            if (confirm(`هل أنت متأكد من حذف "${productName}"؟`)) {
+                delete systemData.products[productName];
+                
+                addLog(`حذف المنتج: ${productName}`);
+                saveSystemData();
+                updateProductSelect();
+                showAlert('success', 'تم حذف المنتج بنجاح');
+                
+                document.getElementById('productSelect').value = '';
+            }
+        }
+
+        // تحديث الأسعار بالجملة
+        function updatePrices() {
+            const updateType = document.getElementById('priceUpdate').value;
+            const updateAll = document.getElementById('updateAll').checked;
+            let percent;
+            
+            if (updateType === 'custom') {
+                percent = parseFloat(document.getElementById('customPercent').value);
+                if (!percent) {
+                    showAlert('error', 'يرجى إدخال النسبة المخصصة');
+                    return;
+                }
+            } else {
+                percent = parseFloat(updateType.replace(/[a-zA-Z]/g, ''));
+            }
+            
+            const productsToUpdate = updateAll ? Object.keys(systemData.products) : 
+                [document.getElementById('productSelect').value].filter(p => p);
+            
+            if (productsToUpdate.length === 0) {
+                showAlert('error', 'يرجى اختيار منتجات للتحديث');
+                return;
+            }
+            
+            productsToUpdate.forEach(name => {
+                const oldPrice = systemData.products[name].price;
+                const change = oldPrice * (percent / 100);
+                systemData.products[name].price = updateType.includes('increase') ? 
+                    oldPrice + change : oldPrice - change;
+            });
+            
+            addLog(`تحديث الأسعار بالجملة: ${percent}% (${updateType.includes('increase') ? 'زيادة' : 'نقصان'})`);
+            saveSystemData();
+            updateProductSelect();
+            showAlert('success', `تم تحديث الأسعار بنجاح (${productsToUpdate.length} منتج)`);
+        }
+
+        // إعادة تعيين الأسعار
+        function resetPrices() {
+            if (confirm('هل أنت متأكد من إعادة تعيين جميع الأسعار؟')) {
+                // الأسعار الأصلية
+                const originalPrices = {
+                    'قهوة تركي': 35,
+                    'قهوة تركي محوج': 40,
+                    'نسكافيه (بلاك)': 40,
+                    'كابتشينو (S)': 60,
+                    'كابتشينو (L)': 70,
+                    'آيس كوفي': 65,
+                    'بيتزا مارجريتا (M)': 120,
+                    'بيتزا مارجريتا (L)': 140,
+                    'حجر فاخر تفاح': 90,
+                    'حجر ميكس VIP': 100
+                };
+                
+                Object.keys(originalPrices).forEach(name => {
+                    if (systemData.products[name]) {
+                        systemData.products[name].price = originalPrices[name];
+                    }
+                });
+                
+                addLog('إعادة تعيين جميع الأسعار');
+                saveSystemData();
+                updateProductSelect();
+                showAlert('success', 'تم إعادة تعيين الأسعار بنجاح');
+            }
+        }
+
+        // إنشاء QR Code
+        function generateQR() {
+            window.open('/qr.html', '_blank');
+        }
+
+        // تحميل QR Code
+        function downloadQR() {
+            window.open('/qr.html', '_blank');
+        }
+
+        // طباعة QR Code
+        function printQR() {
+            window.open('/qr.html', '_blank');
+        }
+
+        // حفظ الإعدادات
+        function saveSettings() {
+            systemData.settings.serviceCharge = parseFloat(document.getElementById('serviceCharge').value);
+            systemData.settings.restaurantName = document.getElementById('restaurantName').value;
+            systemData.settings.autoUpdate = parseInt(document.getElementById('autoUpdate').value);
+            
+            addLog('تحديث إعدادات النظام');
+            saveSystemData();
+            showAlert('success', 'تم حفظ الإعدادات بنجاح');
+        }
+
+        // تصدير البيانات
+        function exportData() {
+            const dataStr = JSON.stringify(systemData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `smile-cafe-data-${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            addLog('تصدير بيانات النظام');
+            showAlert('success', 'تم تصدير البيانات بنجاح');
+        }
+
+        // استيراد البيانات
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    try {
+                        const importedData = JSON.parse(event.target.result);
+                        systemData = importedData;
+                        saveSystemData();
+                        updateProductSelect();
+                        addLog('استيراد بيانات النظام');
+                        showAlert('success', 'تم استيراد البيانات بنجاح');
+                    } catch (error) {
+                        showAlert('error', 'خطأ في ملف البيانات');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        // إنشاء تقرير
+        function generateReport(type) {
+            const reportContent = document.getElementById('reportContent');
+            let html = '<h4>📊 ' + (type === 'daily' ? 'تقرير يومي' : type === 'weekly' ? 'تقرير أسبوعي' : 'تقرير شهري') + '</h4>';
+            html += '<table class="table"><thead><tr><th>المنتج</th><th>السعر</th><th>القسم</th></tr></thead><tbody>';
+            
+            Object.keys(systemData.products).forEach(name => {
+                const product = systemData.products[name];
+                html += `<tr><td>${name}</td><td>${product.price.toFixed(2)} ج.م</td><td>${product.section}</td></tr>`;
+            });
+            
+            html += '</tbody></table>';
+            html += `<p>إجمالي المنتجات: ${Object.keys(systemData.products).length}</p>`;
+            html += `<p>متوسط السعر: ${(Object.values(systemData.products).reduce((sum, p) => sum + p.price, 0) / Object.keys(systemData.products).length).toFixed(2)} ج.م</p>`;
+            
+            reportContent.innerHTML = html;
+            addLog(`إنشاء تقرير ${type}`);
+        }
+
+        // تصدير التقرير
+        function exportReport() {
+            const reportContent = document.getElementById('reportContent').innerHTML;
+            const blob = new Blob([reportContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `smile-cafe-report-${new Date().toISOString().split('T')[0]}.html`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            addLog('تصدير التقرير');
+        }
+
+        // تحميل السجلات
+        function loadLogs() {
+            const logContent = document.getElementById('logContent');
+            const filter = document.getElementById('logFilter').value;
+            
+            let logs = systemData.logs.slice(-filter === 'all' ? systemData.logs.length : parseInt(filter));
+            
+            if (logs.length === 0) {
+                logContent.innerHTML = '<p>لا توجد سجلات</p>';
+                return;
+            }
+            
+            let html = '<table class="table"><thead><tr><th>التوقت</th><th>الإجراء</th></tr></thead><tbody>';
+            
+            logs.forEach(log => {
+                const date = new Date(log.timestamp);
+                html += `<tr><td>${date.toLocaleString('ar-EG')}</td><td>${log.action}</td></tr>`;
+            });
+            
+            html += '</tbody></table>';
+            logContent.innerHTML = html;
+        }
+
+        // إضافة سجل
+        function addLog(action) {
+            systemData.logs.push({
+                timestamp: new Date().toISOString(),
+                action: action
+            });
+            
+            // الاحتفاظ بآخر 1000 سجل فقط
+            if (systemData.logs.length > 1000) {
+                systemData.logs = systemData.logs.slice(-1000);
+            }
+            
+            saveSystemData();
+            loadLogs();
+        }
+
+        // حفظ بيانات النظام
+        function saveSystemData() {
+            localStorage.setItem('smileCafeData', JSON.stringify(systemData));
+            updateLastUpdated();
+        }
+
+        // تحديث وقت آخر تحديث
+        function updateLastUpdated() {
+            const now = new Date().toLocaleString('ar-EG');
+            document.getElementById('systemLastUpdated').innerHTML = `📅 آخر تحديث: ${now}`;
+            document.getElementById('qrLastUpdated').innerHTML = `📅 آخر تحديث: ${now}`;
+        }
+
+        // عرض التنبيهات
+        function showAlert(type, message) {
+            const alerts = {
+                success: document.getElementById('successAlert'),
+                error: document.getElementById('errorAlert'),
+                info: document.getElementById('infoAlert')
+            };
+            
+            Object.values(alerts).forEach(alert => alert.style.display = 'none');
+            
+            alerts[type].innerHTML = message;
+            alerts[type].style.display = 'block';
+            
+            setTimeout(() => {
+                alerts[type].style.display = 'none';
+            }, 3000);
+        }
+
+        // مراقبة تغييرات النموذج
+        document.getElementById('priceUpdate').addEventListener('change', function() {
+            const customGroup = document.getElementById('customPercentGroup');
+            customGroup.style.display = this.value === 'custom' ? 'block' : 'none';
+        });
+
+        // تحديث تلقائي
+        setInterval(() => {
+            updateLastUpdated();
+        }, 60000);
+    </script>
+</body>
+</html>
