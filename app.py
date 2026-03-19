@@ -321,9 +321,12 @@ def toggle_priority(order_id):
 # ==========================================
 
 def setup_smile_cafe_data():
+    print("Creating database tables...")
     db.create_all()
+    print("Database tables created successfully!")
 
     if Product.query.first(): 
+        print("Database already contains data. Skipping initialization.")
         return
 
     raw_materials = [
